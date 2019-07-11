@@ -16,3 +16,18 @@ In order for the program to us any of these providers, you must aquire key from 
 
 <br /><p style='color: red;'><b>**Access must be supplied for any the specified weather providers and a username to use
 the geonames website (<a href=\\\"http://www.geonames.org/\\\">http://www.geonames.org/</a>) for city search.</b></p>
+<br/>
+<p>
+  The following packages are <b>required</b> for the program to operate successfully and can be downloaded via the NuGet Package Manager within the Visual Studio IDE:
+  <ol>
+    <li>EntityFramework.6.2.0</li>
+    <li>HtmlRenderer.Core.1.5.0.6</li>
+    <li>HtmlRenderer.WinForms.1.5.0.6</li>
+    <li>Newtonsoft.Json.12.0.2</li>
+    <li>System.Data.SQLite.1.0.111.0</li>
+    <li>System.Data.SQLite.Core.1.0.111.0</li>
+    <li>System.Data.SQLite.EF6.1.0.111.0</li>
+    <li>System.Data.SQLite.Linq.1.0.111.0</li>
+  </ol>
+</p>
+<br /><p style='color: red;'><b>**The packages listed above are REQUIRED for the program to operate.</b></p>
