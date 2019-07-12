@@ -147,7 +147,7 @@
             this.btnLocation.ForeColor = System.Drawing.Color.White;
             this.btnLocation.Image = ((System.Drawing.Image)(resources.GetObject("btnLocation.Image")));
             this.btnLocation.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnLocation.Location = new System.Drawing.Point(135, 109);
+            this.btnLocation.Location = new System.Drawing.Point(135, 112);
             this.btnLocation.Name = "btnLocation";
             this.btnLocation.Size = new System.Drawing.Size(217, 26);
             this.btnLocation.TabIndex = 118;
@@ -214,7 +214,7 @@
             this.lblWeatherCondition.BackColor = System.Drawing.Color.Transparent;
             this.lblWeatherCondition.Font = new System.Drawing.Font("Samsung Sans", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblWeatherCondition.ForeColor = System.Drawing.Color.White;
-            this.lblWeatherCondition.Location = new System.Drawing.Point(138, 68);
+            this.lblWeatherCondition.Location = new System.Drawing.Point(138, 69);
             this.lblWeatherCondition.Name = "lblWeatherCondition";
             this.lblWeatherCondition.Size = new System.Drawing.Size(199, 22);
             this.lblWeatherCondition.TabIndex = 110;
@@ -227,7 +227,7 @@
             this.flpAtmosphere.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.flpAtmosphere.Controls.Add(this.btnWindReading);
             this.flpAtmosphere.Controls.Add(this.btnHumidity);
-            this.flpAtmosphere.Location = new System.Drawing.Point(138, 85);
+            this.flpAtmosphere.Location = new System.Drawing.Point(138, 88);
             this.flpAtmosphere.Margin = new System.Windows.Forms.Padding(0);
             this.flpAtmosphere.Name = "flpAtmosphere";
             this.flpAtmosphere.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -285,9 +285,9 @@
             this.pnlDay3.Controls.Add(this.lblDay3Day);
             this.pnlDay3.Controls.Add(this.lblDay3Temps);
             this.pnlDay3.Controls.Add(this.picDay3Image);
-            this.pnlDay3.Location = new System.Drawing.Point(141, 172);
+            this.pnlDay3.Location = new System.Drawing.Point(141, 176);
             this.pnlDay3.Name = "pnlDay3";
-            this.pnlDay3.Size = new System.Drawing.Size(64, 97);
+            this.pnlDay3.Size = new System.Drawing.Size(64, 94);
             this.pnlDay3.TabIndex = 114;
             // 
             // lblDay3Day
@@ -307,7 +307,7 @@
             this.lblDay3Temps.BackColor = System.Drawing.Color.Transparent;
             this.lblDay3Temps.Font = new System.Drawing.Font("Samsung Sans", 11.25F);
             this.lblDay3Temps.ForeColor = System.Drawing.Color.White;
-            this.lblDay3Temps.Location = new System.Drawing.Point(0, 72);
+            this.lblDay3Temps.Location = new System.Drawing.Point(0, 67);
             this.lblDay3Temps.Name = "lblDay3Temps";
             this.lblDay3Temps.Size = new System.Drawing.Size(64, 23);
             this.lblDay3Temps.TabIndex = 75;
@@ -318,7 +318,7 @@
             // 
             this.picDay3Image.BackColor = System.Drawing.Color.Transparent;
             this.picDay3Image.ErrorImage = null;
-            this.picDay3Image.Location = new System.Drawing.Point(11, 31);
+            this.picDay3Image.Location = new System.Drawing.Point(11, 28);
             this.picDay3Image.Name = "picDay3Image";
             this.picDay3Image.Size = new System.Drawing.Size(40, 40);
             this.picDay3Image.TabIndex = 57;
@@ -330,9 +330,9 @@
             this.pnlDay2.Controls.Add(this.lblDay2Day);
             this.pnlDay2.Controls.Add(this.lblDay2Temps);
             this.pnlDay2.Controls.Add(this.picDay2Image);
-            this.pnlDay2.Location = new System.Drawing.Point(74, 172);
+            this.pnlDay2.Location = new System.Drawing.Point(74, 176);
             this.pnlDay2.Name = "pnlDay2";
-            this.pnlDay2.Size = new System.Drawing.Size(64, 97);
+            this.pnlDay2.Size = new System.Drawing.Size(64, 94);
             this.pnlDay2.TabIndex = 113;
             // 
             // lblDay2Day
@@ -352,7 +352,7 @@
             this.lblDay2Temps.BackColor = System.Drawing.Color.Transparent;
             this.lblDay2Temps.Font = new System.Drawing.Font("Samsung Sans", 11.25F);
             this.lblDay2Temps.ForeColor = System.Drawing.Color.White;
-            this.lblDay2Temps.Location = new System.Drawing.Point(0, 72);
+            this.lblDay2Temps.Location = new System.Drawing.Point(0, 67);
             this.lblDay2Temps.Name = "lblDay2Temps";
             this.lblDay2Temps.Size = new System.Drawing.Size(64, 23);
             this.lblDay2Temps.TabIndex = 75;
@@ -363,7 +363,7 @@
             // 
             this.picDay2Image.BackColor = System.Drawing.Color.Transparent;
             this.picDay2Image.ErrorImage = null;
-            this.picDay2Image.Location = new System.Drawing.Point(11, 31);
+            this.picDay2Image.Location = new System.Drawing.Point(11, 28);
             this.picDay2Image.Name = "picDay2Image";
             this.picDay2Image.Size = new System.Drawing.Size(40, 40);
             this.picDay2Image.TabIndex = 57;
@@ -375,9 +375,9 @@
             this.pnlDay4.Controls.Add(this.lblDay4Day);
             this.pnlDay4.Controls.Add(this.lblDay4Temps);
             this.pnlDay4.Controls.Add(this.picDay4Image);
-            this.pnlDay4.Location = new System.Drawing.Point(208, 172);
+            this.pnlDay4.Location = new System.Drawing.Point(208, 176);
             this.pnlDay4.Name = "pnlDay4";
-            this.pnlDay4.Size = new System.Drawing.Size(64, 97);
+            this.pnlDay4.Size = new System.Drawing.Size(64, 94);
             this.pnlDay4.TabIndex = 115;
             // 
             // lblDay4Day
@@ -397,7 +397,7 @@
             this.lblDay4Temps.BackColor = System.Drawing.Color.Transparent;
             this.lblDay4Temps.Font = new System.Drawing.Font("Samsung Sans", 11.25F);
             this.lblDay4Temps.ForeColor = System.Drawing.Color.White;
-            this.lblDay4Temps.Location = new System.Drawing.Point(0, 72);
+            this.lblDay4Temps.Location = new System.Drawing.Point(0, 67);
             this.lblDay4Temps.Name = "lblDay4Temps";
             this.lblDay4Temps.Size = new System.Drawing.Size(64, 23);
             this.lblDay4Temps.TabIndex = 75;
@@ -408,7 +408,7 @@
             // 
             this.picDay4Image.BackColor = System.Drawing.Color.Transparent;
             this.picDay4Image.ErrorImage = null;
-            this.picDay4Image.Location = new System.Drawing.Point(11, 31);
+            this.picDay4Image.Location = new System.Drawing.Point(11, 28);
             this.picDay4Image.Name = "picDay4Image";
             this.picDay4Image.Size = new System.Drawing.Size(40, 40);
             this.picDay4Image.TabIndex = 57;
@@ -419,7 +419,7 @@
             this.lblBorder.BackColor = System.Drawing.Color.Transparent;
             this.lblBorder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblBorder.ForeColor = System.Drawing.Color.White;
-            this.lblBorder.Location = new System.Drawing.Point(244, 26);
+            this.lblBorder.Location = new System.Drawing.Point(248, 29);
             this.lblBorder.Name = "lblBorder";
             this.lblBorder.Size = new System.Drawing.Size(41, 1);
             this.lblBorder.TabIndex = 122;
@@ -430,9 +430,9 @@
             this.pnlDay5.Controls.Add(this.lblDay5Day);
             this.pnlDay5.Controls.Add(this.lblDay5Temps);
             this.pnlDay5.Controls.Add(this.picDay5Image);
-            this.pnlDay5.Location = new System.Drawing.Point(275, 172);
+            this.pnlDay5.Location = new System.Drawing.Point(275, 176);
             this.pnlDay5.Name = "pnlDay5";
-            this.pnlDay5.Size = new System.Drawing.Size(64, 97);
+            this.pnlDay5.Size = new System.Drawing.Size(64, 94);
             this.pnlDay5.TabIndex = 116;
             // 
             // lblDay5Day
@@ -452,7 +452,7 @@
             this.lblDay5Temps.BackColor = System.Drawing.Color.Transparent;
             this.lblDay5Temps.Font = new System.Drawing.Font("Samsung Sans", 11.25F);
             this.lblDay5Temps.ForeColor = System.Drawing.Color.White;
-            this.lblDay5Temps.Location = new System.Drawing.Point(0, 72);
+            this.lblDay5Temps.Location = new System.Drawing.Point(0, 67);
             this.lblDay5Temps.Name = "lblDay5Temps";
             this.lblDay5Temps.Size = new System.Drawing.Size(64, 23);
             this.lblDay5Temps.TabIndex = 75;
@@ -463,7 +463,7 @@
             // 
             this.picDay5Image.BackColor = System.Drawing.Color.Transparent;
             this.picDay5Image.ErrorImage = null;
-            this.picDay5Image.Location = new System.Drawing.Point(11, 31);
+            this.picDay5Image.Location = new System.Drawing.Point(11, 28);
             this.picDay5Image.Name = "picDay5Image";
             this.picDay5Image.Size = new System.Drawing.Size(40, 40);
             this.picDay5Image.TabIndex = 57;
@@ -475,9 +475,9 @@
             this.pnlDay1.Controls.Add(this.lblDay1Day);
             this.pnlDay1.Controls.Add(this.lblDay1Temps);
             this.pnlDay1.Controls.Add(this.picDay1Image);
-            this.pnlDay1.Location = new System.Drawing.Point(6, 172);
+            this.pnlDay1.Location = new System.Drawing.Point(6, 176);
             this.pnlDay1.Name = "pnlDay1";
-            this.pnlDay1.Size = new System.Drawing.Size(64, 97);
+            this.pnlDay1.Size = new System.Drawing.Size(64, 94);
             this.pnlDay1.TabIndex = 103;
             // 
             // lblDay1Day
@@ -497,7 +497,7 @@
             this.lblDay1Temps.BackColor = System.Drawing.Color.Transparent;
             this.lblDay1Temps.Font = new System.Drawing.Font("Samsung Sans", 11.25F);
             this.lblDay1Temps.ForeColor = System.Drawing.Color.White;
-            this.lblDay1Temps.Location = new System.Drawing.Point(0, 71);
+            this.lblDay1Temps.Location = new System.Drawing.Point(0, 67);
             this.lblDay1Temps.Name = "lblDay1Temps";
             this.lblDay1Temps.Size = new System.Drawing.Size(64, 23);
             this.lblDay1Temps.TabIndex = 75;
@@ -510,7 +510,7 @@
             this.picDay1Image.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.picDay1Image.ErrorImage = null;
             this.picDay1Image.InitialImage = null;
-            this.picDay1Image.Location = new System.Drawing.Point(11, 31);
+            this.picDay1Image.Location = new System.Drawing.Point(11, 28);
             this.picDay1Image.Name = "picDay1Image";
             this.picDay1Image.Size = new System.Drawing.Size(40, 40);
             this.picDay1Image.TabIndex = 57;
@@ -519,9 +519,9 @@
             // lblFeelsLike
             // 
             this.lblFeelsLike.BackColor = System.Drawing.Color.Transparent;
-            this.lblFeelsLike.Font = new System.Drawing.Font("Samsung Sans", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFeelsLike.Font = new System.Drawing.Font("Samsung Sans", 12.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFeelsLike.ForeColor = System.Drawing.Color.White;
-            this.lblFeelsLike.Location = new System.Drawing.Point(139, 46);
+            this.lblFeelsLike.Location = new System.Drawing.Point(139, 47);
             this.lblFeelsLike.Name = "lblFeelsLike";
             this.lblFeelsLike.Size = new System.Drawing.Size(198, 22);
             this.lblFeelsLike.TabIndex = 109;
@@ -546,7 +546,7 @@
             this.lblDayLow.BackColor = System.Drawing.Color.Transparent;
             this.lblDayLow.Font = new System.Drawing.Font("Samsung Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDayLow.ForeColor = System.Drawing.Color.White;
-            this.lblDayLow.Location = new System.Drawing.Point(244, 24);
+            this.lblDayLow.Location = new System.Drawing.Point(248, 27);
             this.lblDayLow.Name = "lblDayLow";
             this.lblDayLow.Size = new System.Drawing.Size(41, 22);
             this.lblDayLow.TabIndex = 108;
@@ -571,7 +571,7 @@
             this.lblDayHigh.BackColor = System.Drawing.Color.Transparent;
             this.lblDayHigh.Font = new System.Drawing.Font("Samsung Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDayHigh.ForeColor = System.Drawing.Color.White;
-            this.lblDayHigh.Location = new System.Drawing.Point(244, 5);
+            this.lblDayHigh.Location = new System.Drawing.Point(248, 9);
             this.lblDayHigh.Name = "lblDayHigh";
             this.lblDayHigh.Size = new System.Drawing.Size(41, 22);
             this.lblDayHigh.TabIndex = 107;
@@ -690,6 +690,7 @@
             this.Opacity = 0.95D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.Text = "Weather Lion Widget";
             this.TransparencyKey = System.Drawing.Color.DarkGray;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmWidget_FormClosing);
             this.Load += new System.EventHandler(this.frmWidget_Load);
