@@ -62,18 +62,18 @@ namespace WeatherLion
 
             // Weather tab
             #region Test Data (un-comment lines for testing)
-            //WeatherLionMain.authorizedProviders = new string[] {
-            //        WeatherLionMain.DARK_SKY, WeatherLionMain.OPEN_WEATHER,
-            //        WeatherLionMain.WEATHER_BIT, WeatherLionMain.YAHOO_WEATHER };
+            WeatherLionMain.authorizedProviders = new string[] {
+                    WeatherLionMain.DARK_SKY, WeatherLionMain.OPEN_WEATHER,
+                    WeatherLionMain.WEATHER_BIT, WeatherLionMain.YAHOO_WEATHER };
 
-            //WeatherLionMain.storedPreferences.StoredPreferences.Provider = WeatherLionMain.DARK_SKY;
-            //WeatherLionMain.storedPreferences.StoredPreferences.Location = "Pine Hills, FL";
-            //WeatherLionMain.storedPreferences.StoredPreferences.Interval = 1800000;
-            //WeatherLionMain.storedPreferences.StoredPreferences.UseMetric = false;
-            //WeatherLionMain.storedPreferences.StoredPreferences.UseSystemLocation = false;
-            //WeatherLionMain.storedPreferences.StoredPreferences.WidgetBackground = "default";
-            //WeatherLionMain.storedPreferences.StoredPreferences.IconSet = "hero";
-            //List<string> preferenceUpdated = new List<string>();
+            WeatherLionMain.storedPreferences.StoredPreferences.Provider = WeatherLionMain.DARK_SKY;
+            WeatherLionMain.storedPreferences.StoredPreferences.Location = "Pine Hills, FL";
+            WeatherLionMain.storedPreferences.StoredPreferences.Interval = 1800000;
+            WeatherLionMain.storedPreferences.StoredPreferences.UseMetric = false;
+            WeatherLionMain.storedPreferences.StoredPreferences.UseSystemLocation = false;
+            WeatherLionMain.storedPreferences.StoredPreferences.WidgetBackground = "default";
+            WeatherLionMain.storedPreferences.StoredPreferences.IconSet = "hero";
+            List<string> preferenceUpdated = new List<string>();
 
             #endregion
 
@@ -183,7 +183,9 @@ namespace WeatherLion
                 @"\line\line\line Praise Ye YAH!!!}";
 
             // ensure that the changes list is empty (comment out during testing)
-            WeatherLionMain.runningWidget.preferenceUpdated.Clear();
+            //WeatherLionMain.runningWidget.preferenceUpdated.Clear();
+
+            LoadKnownPlaces();
         }// end of method frmPreferences_Load          
 
         /// <summary>
@@ -262,24 +264,25 @@ namespace WeatherLion
                     }// end of outter foreach block 
                 }
 
-                if (!WeatherLionMain.storedPreferences.StoredPreferences.Equals(packName))
-                {
-                    if (WeatherLionMain.runningWidget.preferenceUpdated.ContainsKey(
-                        WeatherLionMain.ICON_SET_PREFERENCE))
-                    {
-                        WeatherLionMain.runningWidget.preferenceUpdated[WeatherLionMain.ICON_SET_PREFERENCE] =
-                            packName;
-                    }// end of if block
-                    else
-                    {
-                        WeatherLionMain.runningWidget.preferenceUpdated.Add(
-                            WeatherLionMain.ICON_SET_PREFERENCE, packName);
-                    }// end of else block                                      
-                }// end of if block
+                // comment out during testing
+                //if (!WeatherLionMain.storedPreferences.StoredPreferences.Equals(packName))
+                //{
+                //    if (WeatherLionMain.runningWidget.preferenceUpdated.ContainsKey(
+                //        WeatherLionMain.ICON_SET_PREFERENCE))
+                //    {
+                //        WeatherLionMain.runningWidget.preferenceUpdated[WeatherLionMain.ICON_SET_PREFERENCE] =
+                //            packName;
+                //    }// end of if block
+                //    else
+                //    {
+                //        WeatherLionMain.runningWidget.preferenceUpdated.Add(
+                //            WeatherLionMain.ICON_SET_PREFERENCE, packName);
+                //    }// end of else block                                      
+                //}// end of if block
             }// end of if block
         }// end of method IconSetChanged
 
-        // Load all incon packs found
+        // Load all available icon packs
         private void LoadInstalledIconPacks()
         {
             if (WeatherLionMain.iconPackList.Count > 0)
@@ -301,6 +304,7 @@ namespace WeatherLion
                 {
                     Size = new Size(140, 148)
                 };
+
                 //iconSelectionContainer.BorderStyle = BorderStyle.FixedSingle;
                 var margin = iconSelectionContainer.Margin;
                 margin.Bottom = 10;
@@ -358,8 +362,8 @@ namespace WeatherLion
                 WeatherLionMain.iconSetControls.Add(packName, components);
             }// end of foreach loop
 
-            //string set = "hero"; //(un-comment during testing)
-            string set = WeatherLionMain.storedPreferences.StoredPreferences.IconSet;
+            string set = "hero"; //(un-comment during testing)
+            //string set = WeatherLionMain.storedPreferences.StoredPreferences.IconSet;
 
             ((RadioButton)
                 ((List<Control>)
@@ -393,9 +397,11 @@ namespace WeatherLion
         private void btnApply_Click(object sender, EventArgs e)
         {
             // this flag will be updated after loading success (comment this line during form testing)
-            WeatherLionMain.runningWidget.dataLoadedSuccessfully = false;
+            //WeatherLionMain.runningWidget.dataLoadedSuccessfully = false;
 
-            WeatherLionMain.runningWidget.applyPreferenceUpdates = true;
+            // this flag will be updated after loading success (comment this line during form testing)
+            //WeatherLionMain.runningWidget.applyPreferenceUpdates = true;
+
             SaveLocationPreference();
         }// end of method btnApply_Click  
 
@@ -447,8 +453,8 @@ namespace WeatherLion
         {
             if (btnSearch.Image == null)
             {
-                string loaderPath = $@"{AppDomain.CurrentDomain.BaseDirectory}res\assets\img\icons\ajax-loader.gif";
-                btnSearch.Image = Image.FromFile(loaderPath);
+                string loadingImage = $@"{AppDomain.CurrentDomain.BaseDirectory}res\assets\img\icons\ajax-loader.gif";
+                btnSearch.Image = Image.FromFile(loadingImage);
                 btnSearch.Text = "Searching...";
 
                 searchCity.Clear(); // clear any previous searches
@@ -457,11 +463,21 @@ namespace WeatherLion
                 if (searchCity.ToString().Trim().Length > 0 &&
                     !UtilityMethod.IsKnownCity(searchCity.ToString()))
                 {
+                    // ignore anything that comes after a comma
+                    if (searchCity.ToString().Contains(","))
+                    {                        
+                        searchCity.Remove(searchCity.ToString().IndexOf(","), 
+                            searchCity.Length - searchCity.ToString().IndexOf(","));
+                    }// end of if block
+
                    UtilityMethod.FindGeoNamesCity(searchCity.ToString(), frmPreference);
                 }// end of if block
             }// end of if block                    
         }// end of method btnSearch_Click
-        
+
+        /// <summary>
+        /// Load a list of previous place that were searched for
+        /// </summary>
         private void LoadKnownPlaces()
         {
             List<CityData> previousSearches = JSONHelper.ImportFromJSON();
@@ -484,14 +500,16 @@ namespace WeatherLion
                 }// end of for each loop
 
                 searchList.Sort();
-
-                // Set the locations combo box to auto complete
-                cboLocation.Items.Clear();
-                cboLocation.AutoCompleteMode = AutoCompleteMode.Suggest;
-                cboLocation.AutoCompleteSource = AutoCompleteSource.ListItems;
-
                 string[] s = searchList.ToArray();
                 cboLocation.Items.AddRange(s);
+                var source = new AutoCompleteStringCollection();
+                source.AddRange(s);
+
+                // Set the locations combo box to auto complete
+                cboLocation.Items.Clear();                
+                cboLocation.AutoCompleteCustomSource = source;           
+                cboLocation.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                cboLocation.AutoCompleteSource = AutoCompleteSource.CustomSource;                
                 
                 // select the first of the previous weather locations if one
                 // was'nt stored in the preferences		
@@ -535,13 +553,13 @@ namespace WeatherLion
                     }// end of else block
 
                     // notify the widget of this update (comment out code during form testing)
-                    if (!WeatherLionMain.runningWidget.preferenceUpdated.ContainsKey(
-                            WeatherLionMain.CURRENT_LOCATION_PREFERENCE))
-                    {
-                        WeatherLionMain.runningWidget.preferenceUpdated.Add(
-                                WeatherLionMain.CURRENT_LOCATION_PREFERENCE, currentLocation);
-                        locationSelected = true;
-                    }// end of if block
+                    //if (!WeatherLionMain.runningWidget.preferenceUpdated.ContainsKey(
+                    //        WeatherLionMain.CURRENT_LOCATION_PREFERENCE))
+                    //{
+                    //    WeatherLionMain.runningWidget.preferenceUpdated.Add(
+                    //            WeatherLionMain.CURRENT_LOCATION_PREFERENCE, currentLocation);
+                    //    locationSelected = true;
+                    //}// end of if block
 
                     if (WeatherLionMain.runningWidget != null)
                     {
@@ -559,58 +577,12 @@ namespace WeatherLion
 
             if (!UtilityMethod.IsFoundInJSONStorage(currentLocation))
             {
-                // update local storage data in the background
-                //StoreNewLocationLocally();
                 //run an background service
                 CityStorageService cs = new CityStorageService(cboLocation.SelectedIndex,
                     cboLocation.Text);
                 cs.Run();
             }// end of if block
-        }// end of method SaveLocationPreference
-
-        /// <summary>
-        /// Add new location locally if it does not already exists
-        /// </summary>
-        private void StoreNewLocationLocally()
-        {
-            GeoNamesGeoLocation.GeoNames gn = GeoNamesGeoLocation.cityGeographicalData
-                .geonames[cboLocation.SelectedIndex];
-
-            string cityName = UtilityMethod.ToProperCase(GeoNamesGeoLocation.cityGeographicalData
-                    .geonames[0].name);
-            string countryName = UtilityMethod
-                    .ToProperCase(gn.countryName);
-            string countryCode = gn.countryCode.ToUpper();
-            string regionName = UtilityMethod
-                    .ToProperCase(gn.adminName1);
-
-            string regionCode = null;
-            regionCode = gn.adminCodes1.iso?.ToUpper();
-
-            float Latitude = float.Parse(gn.lat);
-            float Longitude = float.Parse(gn.lng);
-
-            CityData cityData = new CityData(cityName, countryName, countryCode,
-                    regionName, regionCode, Latitude, Longitude);
-
-            string currentCity = regionCode != null ? $"{cityName}, {regionCode}" : $"{cityName}, {countryName}";
-
-            if (!UtilityMethod.IsFoundInDatabase(currentCity))
-            {
-                UtilityMethod.AddCityToDatabase(cityName, countryName, countryCode,
-                        regionName, regionCode, Latitude, Longitude);
-            }// end of if block
-
-            if (!UtilityMethod.IsFoundInJSONStorage(currentCity))
-            {
-                JSONHelper.ExportToJSON(cityData);
-            }// end of if block
-
-            if (!UtilityMethod.IsFoundInXMLStorage(currentCity))
-            {
-                XMLHelper.ExportToXML(cityData);
-            }// end of if block
-        }// end of method StoreNewLocationLocally
+        }// end of method SaveLocationPreference        
 
         private void chkUseSystemLocation_CheckedChanged(object sender, EventArgs e)
         {
