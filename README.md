@@ -18,7 +18,7 @@ The program makes use data received from the specified web services in either JS
 </p>
 
 <br /><p style='color: red;'><b>**Access must be supplied for any the specified weather providers and a username to use
-the geonames website (<a href=\\\"http://www.geonames.org/\\\">http://www.geonames.org/</a>) for city search.</b></p>
+the geonames website (<a href="http://www.geonames.org/">http://www.geonames.org/</a>) for city search.</b></p>
 <br/>
 <p>
   The following packages are <b>required</b> for the program to operate successfully and can be downloaded via the NuGet Package Manager within the Visual Studio IDE:
