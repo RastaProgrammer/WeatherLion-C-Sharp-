@@ -625,6 +625,13 @@ namespace WeatherLion
                     }// end of if block
                     else
                     {
+                        // Yahoo has a habit of having sunny nights
+                        if (WidgetUpdateService.currentCondition.ToString().ToLower().Equals("sunny"))
+                        {
+                            WidgetUpdateService.currentCondition.Clear();
+                            WidgetUpdateService.currentCondition.Append("Clear");
+                        }// end of if block
+
                         if (UtilityMethod.weatherImages.ContainsKey($"{currentCondition.ToLower()} (night)"))
                         {
                             currentConditionIcon.Clear();

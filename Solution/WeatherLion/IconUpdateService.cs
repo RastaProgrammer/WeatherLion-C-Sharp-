@@ -43,7 +43,7 @@ namespace WeatherLion
                 {
                     // if there was no previous Internet connection, check for a return in connectivity
                     // and refresh the widget
-                    if (currentWidget.usingPreviousData && UtilityMethod.UpdatedRequired())
+                    if (currentWidget.usingPreviousData && UtilityMethod.UpdateRequired())
                     {
                         // run the weather service
                         WidgetUpdateService ws = new WidgetUpdateService(false, currentWidget);

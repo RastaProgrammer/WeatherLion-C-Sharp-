@@ -62,18 +62,18 @@ namespace WeatherLion
 
             // Weather tab
             #region Test Data (un-comment lines for testing)
-            WeatherLionMain.authorizedProviders = new string[] {
-                    WeatherLionMain.DARK_SKY, WeatherLionMain.OPEN_WEATHER,
-                    WeatherLionMain.WEATHER_BIT, WeatherLionMain.YAHOO_WEATHER };
+            //WeatherLionMain.authorizedProviders = new string[] {
+            //        WeatherLionMain.DARK_SKY, WeatherLionMain.OPEN_WEATHER,
+            //        WeatherLionMain.WEATHER_BIT, WeatherLionMain.YAHOO_WEATHER };
 
-            WeatherLionMain.storedPreferences.StoredPreferences.Provider = WeatherLionMain.DARK_SKY;
-            WeatherLionMain.storedPreferences.StoredPreferences.Location = "Pine Hills, FL";
-            WeatherLionMain.storedPreferences.StoredPreferences.Interval = 1800000;
-            WeatherLionMain.storedPreferences.StoredPreferences.UseMetric = false;
-            WeatherLionMain.storedPreferences.StoredPreferences.UseSystemLocation = false;
-            WeatherLionMain.storedPreferences.StoredPreferences.WidgetBackground = "default";
-            WeatherLionMain.storedPreferences.StoredPreferences.IconSet = "hero";
-            List<string> preferenceUpdated = new List<string>();
+            //WeatherLionMain.storedPreferences.StoredPreferences.Provider = WeatherLionMain.DARK_SKY;
+            //WeatherLionMain.storedPreferences.StoredPreferences.Location = "Pine Hills, FL";
+            //WeatherLionMain.storedPreferences.StoredPreferences.Interval = 1800000;
+            //WeatherLionMain.storedPreferences.StoredPreferences.UseMetric = false;
+            //WeatherLionMain.storedPreferences.StoredPreferences.UseSystemLocation = false;
+            //WeatherLionMain.storedPreferences.StoredPreferences.WidgetBackground = "default";
+            //WeatherLionMain.storedPreferences.StoredPreferences.IconSet = "hero";
+            //List<string> preferenceUpdated = new List<string>();
 
             #endregion
 
@@ -174,7 +174,7 @@ namespace WeatherLion
             // About tab
             rtbAbout.Rtf = @"{\rtf1\pc \qc \b Weather Lion\b0" +
                 @"\line Author: Paul O. Patterson" +
-                @"\line BushBungalo Productions™  2017 - " + DateTime.Now.Year +
+                @"\line BushBungalo Productions™  2005 - " + DateTime.Now.Year +
                 @"\line Version: 1.0" +
                 @"\line © All rights reserved" +
                 @"\line\line\ql\par Weather Lion is an ongoing effort to create a desktop weather widget " +
@@ -183,7 +183,7 @@ namespace WeatherLion
                 @"\line\line\line Praise Ye YAH!!!}";
 
             // ensure that the changes list is empty (comment out during testing)
-            //WeatherLionMain.runningWidget.preferenceUpdated.Clear();
+            WeatherLionMain.runningWidget.preferenceUpdated.Clear();
 
             LoadKnownPlaces();
         }// end of method frmPreferences_Load          
@@ -265,20 +265,20 @@ namespace WeatherLion
                 }
 
                 // comment out during testing
-                //if (!WeatherLionMain.storedPreferences.StoredPreferences.Equals(packName))
-                //{
-                //    if (WeatherLionMain.runningWidget.preferenceUpdated.ContainsKey(
-                //        WeatherLionMain.ICON_SET_PREFERENCE))
-                //    {
-                //        WeatherLionMain.runningWidget.preferenceUpdated[WeatherLionMain.ICON_SET_PREFERENCE] =
-                //            packName;
-                //    }// end of if block
-                //    else
-                //    {
-                //        WeatherLionMain.runningWidget.preferenceUpdated.Add(
-                //            WeatherLionMain.ICON_SET_PREFERENCE, packName);
-                //    }// end of else block                                      
-                //}// end of if block
+                if (!WeatherLionMain.storedPreferences.StoredPreferences.Equals(packName))
+                {
+                    if (WeatherLionMain.runningWidget.preferenceUpdated.ContainsKey(
+                        WeatherLionMain.ICON_SET_PREFERENCE))
+                    {
+                        WeatherLionMain.runningWidget.preferenceUpdated[WeatherLionMain.ICON_SET_PREFERENCE] =
+                            packName;
+                    }// end of if block
+                    else
+                    {
+                        WeatherLionMain.runningWidget.preferenceUpdated.Add(
+                            WeatherLionMain.ICON_SET_PREFERENCE, packName);
+                    }// end of else block                                      
+                }// end of if block
             }// end of if block
         }// end of method IconSetChanged
 
@@ -362,8 +362,8 @@ namespace WeatherLion
                 WeatherLionMain.iconSetControls.Add(packName, components);
             }// end of foreach loop
 
-            string set = "hero"; //(un-comment during testing)
-            //string set = WeatherLionMain.storedPreferences.StoredPreferences.IconSet;
+            //string set = "hero"; //(un-comment during testing)
+            string set = WeatherLionMain.storedPreferences.StoredPreferences.IconSet;
 
             ((RadioButton)
                 ((List<Control>)
@@ -397,10 +397,10 @@ namespace WeatherLion
         private void btnApply_Click(object sender, EventArgs e)
         {
             // this flag will be updated after loading success (comment this line during form testing)
-            //WeatherLionMain.runningWidget.dataLoadedSuccessfully = false;
+            WeatherLionMain.runningWidget.dataLoadedSuccessfully = false;
 
             // this flag will be updated after loading success (comment this line during form testing)
-            //WeatherLionMain.runningWidget.applyPreferenceUpdates = true;
+            WeatherLionMain.runningWidget.applyPreferenceUpdates = true;
 
             SaveLocationPreference();
         }// end of method btnApply_Click  
@@ -553,13 +553,13 @@ namespace WeatherLion
                     }// end of else block
 
                     // notify the widget of this update (comment out code during form testing)
-                    //if (!WeatherLionMain.runningWidget.preferenceUpdated.ContainsKey(
-                    //        WeatherLionMain.CURRENT_LOCATION_PREFERENCE))
-                    //{
-                    //    WeatherLionMain.runningWidget.preferenceUpdated.Add(
-                    //            WeatherLionMain.CURRENT_LOCATION_PREFERENCE, currentLocation);
-                    //    locationSelected = true;
-                    //}// end of if block
+                    if (!WeatherLionMain.runningWidget.preferenceUpdated.ContainsKey(
+                            WeatherLionMain.CURRENT_LOCATION_PREFERENCE))
+                    {
+                        WeatherLionMain.runningWidget.preferenceUpdated.Add(
+                                WeatherLionMain.CURRENT_LOCATION_PREFERENCE, currentLocation);
+                        locationSelected = true;
+                    }// end of if block
 
                     if (WeatherLionMain.runningWidget != null)
                     {

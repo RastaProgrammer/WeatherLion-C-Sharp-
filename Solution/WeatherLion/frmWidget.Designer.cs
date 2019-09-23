@@ -540,6 +540,7 @@
             this.picOffline.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picOffline.TabIndex = 104;
             this.picOffline.TabStop = false;
+            this.picOffline.Visible = false;
             // 
             // lblDayLow
             // 

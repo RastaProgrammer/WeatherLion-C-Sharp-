@@ -157,6 +157,16 @@ namespace WeatherLion
         }// end of method SaveToJSONFile
 
         /// <summary>
+        /// Converts a <see cref="string"/> containing a JSON array object to a <see cref="List{T}"/>
+        /// </summary>
+        /// <param name="jsonArray">JSON data formatted as a <see cref="string"/></param>
+        /// <returns></returns>
+        public static List<String> ToList(String jsonArray)
+        {
+            return JsonConvert.DeserializeObject<List<String>>(jsonArray);
+        }// end of method ToList
+
+        /// <summary>
         /// Returns JSON data to in a formatted (pretty) structure
         /// </summary>
         /// <param name="json">JSON data formatted as a <see cref="string"/></param>

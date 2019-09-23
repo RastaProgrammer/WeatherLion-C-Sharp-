@@ -720,6 +720,7 @@ namespace WeatherLion
             {"severe thunderstorms", "1.png"},
             {"thunderstorm", "1.png"},
             {"thunderstorms", "1.png"},
+            {"tstorms", "1.png"},
             {"t-storms", "1.png"},
             {"freezing rain", "2.png"},
             {"mixed rain and hail", "2.png"},
@@ -790,8 +791,7 @@ namespace WeatherLion
             {"scattered thunderstorms", "16.png"},
             {"scattered t-storms", "16.png"},
             {"scattered tstorms", "16.png"},
-            {"thundershowers", "16.png"},
-            {"tstorms", "16.png"},
+            {"thundershowers", "16.png"},            
             {"thunderstorm with rain", "16.png"},
             {"scattered showers", "17.png"},
             {"isolated showers", "17.png"},
@@ -1067,8 +1067,7 @@ namespace WeatherLion
         public static DateTime lastUpdated;
         public static bool refreshRequested;
         public static bool weatherWidgetEnabled = true;
-        public static string fileName = "current_city.xml";
-
+        
         public static List<string> subDirectoriesFound = new List<string>();
 
         #endregion
@@ -2083,6 +2082,19 @@ namespace WeatherLion
             return float.Parse(mph.ToString("0.##"), CultureInfo.InvariantCulture.NumberFormat);
         }// end of method MpsToMph
 
+        /// <summary>
+        /// Accepts a numeric value of type float that represents
+        /// a rate of speed in Mph (Miles per hour) and converts it to Mph (Meters per seconds).
+        /// </summary>
+        /// <param name="mph">The rate of speed in Mph (Miles per hour).</param>
+        /// <returns>The converted rate of speed value in Mph (Meters per seconds).</returns>
+        public static float MphToMps(float mph)
+        {
+            float mps = (float) Math.Round(mph * 0.44704);
+
+            return float.Parse(mps.ToString("0.##"), CultureInfo.InvariantCulture.NumberFormat);
+        }// end of method MphToMps
+
         #endregion
 
         public static ToolTip controlTip = new ToolTip();
@@ -2294,13 +2306,13 @@ namespace WeatherLion
 
             if (cityName.Contains(" "))
             {
-                cityName.Replace(" ", "+");
+                cityName = cityName.Replace(" ", "+");
             }// end of if block
 
             // All commas must be replaced with the + symbols for the HERE Maps web service
             if (cityName.Contains(","))
             {
-                cityName.Replace(",", "+");
+                cityName = cityName.Replace(",", "+");
             }// end of if block
 
             string cityUrl =
@@ -2328,13 +2340,13 @@ namespace WeatherLion
             // All spaces must be replaced with the + symbols for the HERE Maps web service
             if (cityName.Contains(" "))
             {
-                cityName.Replace(" ", "+");
+                cityName = cityName.Replace(" ", "+");
             }// end of if block
 
             // All commas must be replaced with the + symbols for the HERE Maps web service
             if (cityName.Contains(","))
             {
-                cityName.Replace(",", "+");
+                cityName = cityName.Replace(",", "+");
             }// end of if block
 
             string cityUrl =
@@ -2444,18 +2456,16 @@ namespace WeatherLion
         {
             // 24 hour times might return a negative if the time-zone
             // offset is subtracted from 00 or 24hrs
-            if (hour < 0) hour = 24 + hour;
-
-            string t = string.Format("{0}:{1} {2}",
-                    (hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour)),
-                    (minute < 10 ? minute == 0 ? "00" : ("0" + minute.ToString())
-                    : minute.ToString()),
-                    (hour > 12 ? "PM" : "AM"));
+            if (hour < 0) hour = 24 + hour;            
 
             //return $"{(hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour))}:" +
             //       $"{(minute < 10 ? ("0" + minute.ToString()) : minute.ToString())} {(hour > 12 ? "PM" : "AM")}";
 
-            return t;
+            return string.Format("{0}:{1} {2}",
+                    (hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour)),
+                    (minute < 10 ? minute == 0 ? "00" : ("0" + minute.ToString())
+                    : minute.ToString()),
+                    (hour > 12 ? "PM" : "AM"));
         }// end of method Get12HourTime
         
         /// <summary>
@@ -2478,14 +2488,14 @@ namespace WeatherLion
 
             int hour = int.Parse(realTime.ToString().Split(':')[0].Trim());
             int minute = int.Parse(realTime.ToString().Split(':')[1].Trim().Split(' ')[0].Trim());
-            string meridiem = realTime.ToString().Split(' ')[1].Trim();
+            string meridian = realTime.ToString().Split(' ')[1].Trim();
             string t = null;
 
-            if (meridiem.ToLower().Equals("am"))
+            if (meridian.ToLower().Equals("am"))
             {
                 t = string.Format("{0:00}:{1:00}", hour < 10 ? 0 + hour : hour == 12 ? 0 : hour, minute);
             }// end of if block
-            else if (meridiem.ToLower().Equals("pm"))
+            else if (meridian.ToLower().Equals("pm"))
             {
                 t = string.Format("{0:00}:{1:00}", hour < 12 ? 12 + hour : hour, minute);
             }// end of else if block
@@ -2641,6 +2651,72 @@ namespace WeatherLion
             return type;
         }// end of method GetPathType
 
+        /**
+     * Get the duration of time that has elapsed since a certain date.
+     *
+     * @param pastDate The date in the past to be compared to.
+     * @return  A {@code String} representing the time frame that has passed.
+     */
+        public static string GetTimeSince(DateTime pastDate)
+        {
+            //milliseconds
+            long difference = (long) (new DateTime() - pastDate).TotalMilliseconds;
+
+            long secondsInMilli = 1000;
+            long minutesInMilli = secondsInMilli * 60;
+
+            long elapsedMinutes = difference / minutesInMilli;
+            string timeElapsed;
+
+            if (elapsedMinutes >= 60)
+            {
+                // an hour or more
+                int hours = (int)elapsedMinutes / 60;
+                timeElapsed = hours > 1 ? hours + " hours ago" : hours + " hour ago";
+            }// end of if block
+            else if (elapsedMinutes >= 1440)
+            {
+                // a day or more
+                int days = (int)elapsedMinutes / 1440;
+                timeElapsed = days > 1 ? days + " days ago" : days + " day ago";
+            }// end of if block
+            else if (elapsedMinutes >= 10080)
+            {
+                // a week or more
+                int weeks = (int)elapsedMinutes / 10080;
+                timeElapsed = weeks > 1 ? weeks + " weeks ago" : weeks + " week ago";
+            }// end of if block
+            else if (elapsedMinutes >= 43830)
+            {
+                // a month or more
+                int months = (int)elapsedMinutes / 1440;
+                timeElapsed = months > 1 ? months + " months ago" : months + " month ago";
+            }// end of if block
+            else if (elapsedMinutes >= 525960)
+            {
+                // a year or more
+                int years = (int)elapsedMinutes / 525960;
+                timeElapsed = years > 1 ? years + " years ago" : years + " year ago";
+            }// end of if block
+            else
+            {
+                int seconds = (int)elapsedMinutes / 60;
+
+                if (elapsedMinutes < 1)
+                {
+                    // time in seconds
+                    timeElapsed = seconds > 1 ? seconds + " seconds ago" : seconds + " second ago";
+                }// end of if block
+                else
+                {
+                    // time in minutes
+                    timeElapsed = elapsedMinutes > 1 ? elapsedMinutes + " minutes ago" : elapsedMinutes + " minute ago";
+                }// end of else block
+            }// end of else block
+
+            return timeElapsed;
+        }// end of method GetTimeSince
+
         /// <summary>
         /// Uses the computers Internet connection to determine the current city location of the connection.
         /// </summary>
@@ -2745,15 +2821,19 @@ namespace WeatherLion
 
                     foreach (CityData c in cityDataList)
                     {
-                        if (c.cityName.Equals(city[0].Trim().ToLower(), StringComparison.OrdinalIgnoreCase) &&
-                                c.regionCode.Equals(city[1].Trim(), StringComparison.OrdinalIgnoreCase) &&
-                                !IsNumeric(c.regionCode) ||
-                                c.countryName.Equals(city[1].Trim(), StringComparison.OrdinalIgnoreCase))
+                        string cCityName = c.cityName;
+                        string cRegionName = c.regionName;
+                        string cRegionCode = c.regionCode;
+                        string cCountryName = c.countryName;
+                        bool containsNumber = IsNumeric(cRegionCode);
+
+                        if (cityName.Equals(cCityName + ", " + cCountryName, StringComparison.OrdinalIgnoreCase) ||
+                            !containsNumber && cityName.Equals(cCityName + ", " + cRegionCode, StringComparison.OrdinalIgnoreCase))
                         {
-                            LogMessage("info", $"{cityName} was found in the JSON storage.",
-                                    "UtilityMethod::IsFoundInJSONStorage");
                             found = true;
-                        }// end of if block
+                            LogMessage("info", cityName + " was found in the JSON storage.",
+                                    TAG + "::IsFoundInJSONStorage");
+                        }// end of if block                        
                     }// end of for each loop  
                 }// end of if block
             }// end of if block            
@@ -2768,7 +2848,6 @@ namespace WeatherLion
         /// <returns>True/False dependent on the outcome of the check.</returns>
         public static bool IsFoundInXMLStorage(string cityName)
         {
-            string[] city = cityName.Split(',');
             bool found = false;
 
             //XML file search   
@@ -2786,15 +2865,18 @@ namespace WeatherLion
                     for (int i = 0; i < list.Count; i++)
                     {
                         XmlElement node = (XmlElement)list[i];
+                        string cCityName = node.GetElementsByTagName("CityName")[0].InnerText;
+                        string cRegionName = node.GetElementsByTagName("RegionName")[0].InnerText;
+                        string cRegionCode = node.GetElementsByTagName("RegionCode")[0].InnerText;
+                        string cCountryName = node.GetElementsByTagName("CountryName")[0].InnerText;
+                        bool containsNumber = IsNumeric(cRegionCode);
 
-                        if (node.GetElementsByTagName("CityName")[0].InnerText.Equals(city[0].Trim().ToLower(), StringComparison.OrdinalIgnoreCase) &&
-                                node.GetElementsByTagName("RegionName")[0].InnerText.Equals(city[1].Trim(), StringComparison.OrdinalIgnoreCase) &&
-                                !IsNumeric(node.GetElementsByTagName("RegionCode")[0].InnerText) ||
-                                node.GetElementsByTagName("CountryName")[0].InnerText.Equals(city[1].Trim(), StringComparison.OrdinalIgnoreCase))
+                        if (cityName.Equals(cCityName + ", " + cCountryName, StringComparison.OrdinalIgnoreCase) ||
+                            !containsNumber && cityName.Equals(cCityName + ", " + cRegionCode, StringComparison.OrdinalIgnoreCase))
                         {
+                            found = true;
                             LogMessage("info", $"{cityName} was found in the XML storage.",
                                     "UtilityMethod::IsFoundInXMLStorage");
-                            found = true;
                         }// end of if block
                     }// end of for loop    		 		
 
@@ -2817,12 +2899,7 @@ namespace WeatherLion
         /// <returns>A boolean value of True/False dependent on the result of the test.</returns>
         public static bool IsValidCityName(string cityName)
         {
-            if (!cityName.Contains(","))
-            {
-                return false;
-            }// end of if block
-
-            return true;
+            return cityName.Contains(",");
         }// end of method IsValidCityName
 
         /// <summary>
@@ -2943,9 +3020,7 @@ namespace WeatherLion
         /// <returns>A <see cref="bool"/> true/false depending on the result of the test.</returns>
         public static bool IsNumeric(string value)
         {
-            bool result = value != null && double.TryParse(value, out double number);
-
-            return result;
+            return value != null && double.TryParse(value, out double number);
         }// end of method IsNumeric
 
         /// <summary>
@@ -3086,13 +3161,13 @@ namespace WeatherLion
             // All spaces must be replaced with the + symbols for the HERE Maps web service
             if (wxLocation.Contains(" "))
             {
-                wxLocation.Replace(" ", "+");
+                wxLocation = wxLocation.Replace(" ", "+");
             }// end of if block
 
             // All commas must be replaced with the + symbols for the HERE Maps web service
             if (wxLocation.Contains(","))
             {
-                wxLocation.Replace(",", "+");
+                wxLocation = wxLocation.Replace(",", "+");
             }// end of if block
 
             string strJSON = null;
@@ -3127,6 +3202,44 @@ namespace WeatherLion
         }// end of method RetrieveGeoNamesGeoLocationUsingAddress
 
         /// <summary>
+        /// Uses the Geonames web service to return the geographical location of a city using it's coordinates.
+        /// </summary>
+        /// <param name="lat">The line of latitude that the city is located</param>
+        /// <param name="lng">The line of longitude that the city is located</param>
+        /// <returns>A <seealso cref="string"/> representation of a JSON <seealso cref="Object"/> returned from the web service.</returns>
+        public static string RetrieveGeoNamesGeoLocationUsingCoordinates(float lat, float lng)
+        {
+            string strJSON = null;
+            string geoUrl =
+                    "http://api.geonames.org/findNearbyPlaceNameJSON?" +
+                    "lat=" + lat +
+                    "&lng=" + lng +
+                    "&username=" + WidgetUpdateService.geoNameAccount;
+
+            if (HasInternetConnection())
+            {
+                try
+                {
+                    strJSON = HttpHelper.DownloadUrl(geoUrl);
+                }// end of try block
+                catch (IOException e)
+                {
+                    LogMessage("severe", e.Message,
+                        "UtilityMethod::RetrieveGeoNamesGeoLocationUsingAddress [line: " +
+                        $"{UtilityMethod.GetExceptionLineNumber(e)}]");
+                }// end of catch block
+
+            }// end of if block
+            else
+            {
+                ShowMessage("No Internet Connection.");
+            }// end of else block
+
+            // Return the data from specified url
+            return strJSON;
+        }// end of method RetrieveGeoNamesGeoLocationUsingCoordinates
+
+        /// <summary>
         ///  Uses the Here Maps web service to return the geographical location of a city using it's name.
         /// </summary>
         /// <param name="wxLocation">The location of the city to be found.</param>
@@ -3136,13 +3249,13 @@ namespace WeatherLion
             // All spaces must be replaced with the + symbols for the HERE Maps web service
             if (wxLocation.Contains(" "))
             {
-                wxLocation.Replace(" ", "+");
+                wxLocation = wxLocation.Replace(" ", "+");
             }// end of if block
 
             // All commas must be replaced with the + symbols for the HERE Maps web service
             if (wxLocation.Contains(","))
             {
-                wxLocation.Replace(",", "+");
+                wxLocation = wxLocation.Replace(",", "+");
             }// end of if block
 
             string strJSON = null;
@@ -3359,7 +3472,7 @@ namespace WeatherLion
             long minutesToGo = MillisecondsToMinutes(interval);
             bool ready = false;
 
-            if (lastUpdated != null && !UpdatedRequired())
+            if (lastUpdated != null && !UpdateRequired())
             {
                DateTime nextUpdateDue = lastUpdated.AddMinutes(MillisecondsToMinutes(interval));
 
@@ -3372,7 +3485,7 @@ namespace WeatherLion
 
                 ready = minutesToGo <= 1;
             }// end of if block
-            else if (UpdatedRequired() || lastUpdated != null)
+            else if (UpdateRequired() || lastUpdated != null)
             {
                 ready = true;
             }// end of else if block
@@ -3420,7 +3533,7 @@ namespace WeatherLion
         /// Determine if the widget needs to be refreshed based on the specified refresh period.
         /// </summary>
         /// <returns>True/False depending on the result of the check.</returns>
-        public static bool UpdatedRequired()
+        public static bool UpdateRequired()
         {
             if (lastUpdated == null)
             {
@@ -3451,7 +3564,7 @@ namespace WeatherLion
             {
                 return false;
             }// end of else block
-        }// end of method UpdatedRequired
+        }// end of method UpdateRequired
 
         /// <summary>
         /// Ensures that the city entered by the user is correctly formatted.

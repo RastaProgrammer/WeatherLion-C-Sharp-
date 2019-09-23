@@ -42,9 +42,9 @@ namespace WeatherLion
         public static string databasePath = AppDomain.CurrentDomain.BaseDirectory + @"res/storage/";        
         public static string databaseFile = databasePath + WeatherLionMain.WAK_DATABASE_NAME;
 
-        public static readonly string announcement = "Weather Lion can consume data from webservices such as:\n"
+        public static readonly string announcement = "Weather Lion is designed to consume data from web services such as:\n"
                                             + "Dark Sky Weather, Here Maps, Yahoo! Weather, Open Weather Map, Weather Bit, Weather Underground,"
-                                            + "and Geonames.\nIn order for the program to us any of these providers, you must aquire key from each"
+                                            + "and Geonames.\nIn order for the program to us any of these providers, you must acquire key from each"
                                             + " services provider.\n\nThe following URLs can be used to obtain access to the websites:\n"
                                             + "   1. Dark Sky: https://darksky.net/dev\n"
                                             + "   2. Geonames: http://www.geonames.org/\n"
@@ -52,7 +52,7 @@ namespace WeatherLion
                                             + "   4. Open Weather Map: https://openweathermap.org/api\n"
                                             + "   5. Weather Bit: https://www.weatherbit.io/api\n"
                                             + "   6. Yahoo Weather: https://developer.yahoo.com/weather/\n"
-                                            + "\nThe program will be able to display weather from Yr.no (Norwegian Metrological Institute) as they don't require a key.\n"
+                                            + "\nThe program will be able to display weather from Yr.no (Norwegian Meteorological Institute) as they don't require a key.\n"
                                             + "\n**Access must be supplied for any the specified weather providers and a username to use "
                                             + "the geonames website http://www.geonames.org/ for city search.";
 

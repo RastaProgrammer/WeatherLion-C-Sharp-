@@ -61,7 +61,7 @@ namespace WeatherLion
         public const string OPEN_WEATHER = "Open Weather Map";
         public const string WEATHER_BIT = "Weather Bit";
         public const string YAHOO_WEATHER = "Yahoo! Weather";
-        public const string YR_WEATHER = "Yr.no (Norwegian Metrological Institute)";
+        public const string YR_WEATHER = "Yr.no (Norwegian Meteorological Institute)";
         public const string WEATHER_UNDERGROUND = "Weather Underground";
         public static string[] providerNames = new string[] {
                 DARK_SKY, GEO_NAMES, HERE_MAPS, OPEN_WEATHER, WEATHER_BIT, YAHOO_WEATHER, YR_WEATHER };
@@ -153,7 +153,7 @@ namespace WeatherLion
             wxOnly.Sort();  // sort the list
 
             // GeoNames is not a weather provider so it cannot be select here
-            if (wxOnly.Contains("GeoNames")) wxOnly.Remove("GeoNames");
+            wxOnly.Remove("GeoNames");
 
             authorizedProviders = wxOnly.ToArray();
             

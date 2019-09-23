@@ -140,18 +140,21 @@ namespace WeatherLion
                 writer.WriteElementString("LowTemperature", currentLow);
                 writer.WriteEndElement();
 
+                // list of forecast data
+                writer.WriteStartElement("DailyForecast");
+
                 // Five Day Forecast                
                 foreach (FiveDayForecast forecast in fiveDayForecast)
-                {
-                    writer.WriteStartElement("ForecastList");
-                        writer.WriteStartElement("ForecastData");                    
-                            writer.WriteElementString("Date", string.Format("{0:ddd MMM dd hh:mm:ss} {1} {0:yyyy}", forecast.forecastDate, tzAbbr));
-                            writer.WriteElementString("Condition", UtilityMethod.ToProperCase(forecast.forecastCondition));
-                            writer.WriteElementString("LowTemperature", forecast.forecastLowTemp);
-                            writer.WriteElementString("HighTemperature", forecast.forecastHighTemp);
-                        writer.WriteEndElement();
-                    writer.WriteEndElement();                    
-                }// end of for each loop    	    	
+                {                    
+                    writer.WriteStartElement("DayForecast");                    
+                        writer.WriteElementString("Date", string.Format("{0:ddd MMM dd hh:mm:ss} {1} {0:yyyy}", forecast.forecastDate, tzAbbr));
+                        writer.WriteElementString("Condition", UtilityMethod.ToProperCase(forecast.forecastCondition));
+                        writer.WriteElementString("LowTemperature", forecast.forecastLowTemp);
+                        writer.WriteElementString("HighTemperature", forecast.forecastHighTemp);
+                    writer.WriteEndElement();                                        
+                }// end of for each loop
+
+                writer.WriteEndElement();
 
                 // close the root element
                 writer.WriteEndElement();

@@ -332,9 +332,8 @@ namespace WeatherLion
 
             wxOnly.Sort();   // sort the list
 
-            // GeoNames is not a weather provider so it cannot be select here
-            if (wxOnly.Contains("Yr.no (Norwegian Metrological Institute)"))
-                wxOnly.Remove("Yr.no (Norwegian Metrological Institute)");
+            // Yr.no (Norwegian Meteorological Institute) does not require an access key at the moment
+            if (wxOnly.Contains(WeatherLionMain.YR_WEATHER)) wxOnly.Remove(WeatherLionMain.YR_WEATHER);
 
             foreach (string provider in wxOnly)
             {

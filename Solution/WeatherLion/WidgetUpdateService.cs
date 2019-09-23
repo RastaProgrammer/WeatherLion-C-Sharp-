@@ -2606,8 +2606,8 @@ namespace WeatherLion
                     xmlWind = rootNode.SelectSingleNode("//Wind");
                     xmlAstronomy = rootNode.SelectSingleNode("//Astronomy");
                     xmlCurrent = rootNode.SelectSingleNode("//Current");
-                    xmlForecast = rootNode.SelectSingleNode("//ForecastList");
-                    xmlForecastList = rootNode.SelectNodes("//ForecastList/ForecastData");
+                    xmlForecast = rootNode.SelectSingleNode("//DailyForecast");
+                    xmlForecastList = rootNode.SelectNodes("//DailyForecast/DayForecast");
 
                     currentCity.Clear();
                     currentCity.Append(xmlLocation.SelectSingleNode("//City").InnerText);
@@ -3611,8 +3611,8 @@ namespace WeatherLion
 
                 // get the root node of the XML document
                 xmlCurrent = rootNode.SelectSingleNode("//Current");
-                xmlForecast = rootNode.SelectSingleNode("//ForecastList");
-                xmlForecastList = rootNode.SelectNodes("//ForecastList/ForecastData");
+                xmlForecast = rootNode.SelectSingleNode("//DailyForecast");
+                xmlForecastList = rootNode.SelectNodes("//DailyForecast/DayForecast");
 
                 // populate the global variables
                 currentWindDirection.Clear();
@@ -3658,7 +3658,7 @@ namespace WeatherLion
                    $" {(WeatherLionMain.storedPreferences.StoredPreferences.UseMetric ? " km/h" : " mph")}");
                 UpdateWidgetControl(frmWeatherWidget.btnHumidity, "Text", currentHumidity.ToString());
 
-                xmlForecastList = rootNode.SelectNodes("//ForecastList/ForecastData");
+                xmlForecastList = rootNode.SelectNodes("//DailyForecast/DayForecast");
                 hl = new int[5, 2];
 
                 CultureInfo provider = CultureInfo.InvariantCulture;

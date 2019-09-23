@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lblLocationDescription.Text" xml:space="preserve">
-    <value>Type the city name for which the weather is required . Example Pine Hills or Kingston. After entering the city name, press the search button to locate the city then select on from the drop down list. 
+    <value>Type the city name for which the weather is required. Example Pine Hills or Kingston. After entering the city name, press the search button to locate the city then select thie city from the drop down list when displayed. 
 </value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
