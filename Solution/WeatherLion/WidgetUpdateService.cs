@@ -301,7 +301,17 @@ namespace WeatherLion
                                             "&units=I&key=" + weatherBitApiKey);
                             break;
                         case WeatherLionMain.YAHOO_WEATHER:
-                            // Yahoo will be handled outside of the switch but it is not invalid.
+                            try
+                            {
+                                strJSON.Add(GetYahooWeatherData(WeatherLionMain.storedPreferences.StoredPreferences.Location.ToLower()));
+                            }// end of try block
+                            catch (Exception e)
+                            {
+                                UtilityMethod.LogMessage("severe", e.Message,
+                                  $"{nameof(WeatherLion)}::GetWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
+                                strJSON = null;
+                            }// end of catch block
+
                             break;
                         case WeatherLionMain.YR_WEATHER:
                             json =
@@ -324,28 +334,11 @@ namespace WeatherLion
 
                             wxUrl.Clear();
                             wxUrl.Append($"https://www.yr.no/place/{countryName}/{regionName}/{cityName}/forecast.xml");
-                            break;
-                        default:
-                            strJSON.Add("Invalid Provider");
-
-                            break;
+                            break;                        
                     }// end of switch block
                 }// end of if block	
 
-                if (wxDataPrivider.Equals(value: WeatherLionMain.YAHOO_WEATHER))
-                {
-                    try
-                    {
-                        strJSON.Add(GetYahooWeatherData(WeatherLionMain.storedPreferences.StoredPreferences.Location.ToLower()));
-                    }// end of try block
-                    catch (Exception e)
-                    {
-                        UtilityMethod.LogMessage("severe", e.Message,
-                          $"{nameof(WeatherLion)}::GetWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
-                        strJSON = null;
-                    }// end of catch block
-                }// end of if block
-                else
+                if (!wxDataPrivider.Equals(value: WeatherLionMain.YAHOO_WEATHER))
                 {
                     if (wxUrl.Length != 0 && fxUrl.Length != 0 && axUrl.Length != 0)
                     {
@@ -370,7 +363,7 @@ namespace WeatherLion
                     {
                         strJSON.Add(UtilityMethod.RetrieveWeatherData(axUrl.ToString()));
                     }// end of else if block
-                }// end of else block
+                }// end of if block                
             }// end of if block
 
             // process the data received
