@@ -630,6 +630,8 @@ namespace WeatherLion
                         {
                             WidgetUpdateService.currentCondition.Clear();
                             WidgetUpdateService.currentCondition.Append("Clear");
+                            lblWeatherCondition.Text = UtilityMethod.ToProperCase(
+                                WidgetUpdateService.currentCondition.ToString());
                         }// end of if block
 
                         if (UtilityMethod.weatherImages.ContainsKey($"{currentCondition.ToLower()} (night)"))
