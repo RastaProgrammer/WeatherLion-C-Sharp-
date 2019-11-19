@@ -47,6 +47,10 @@ namespace WeatherLion
 
         private const string TAG = "CityDataService";
 
+        private const String QUERY_COMMAND = "name_equals";
+	    private String dataURL = null;
+        private String response;
+
         public CityDataService(string url, string service)
         {
             m_url = url;
@@ -96,54 +100,193 @@ namespace WeatherLion
         public void GetCityData()
         {
             string previousSearchesPath = $@"{AppDomain.CurrentDomain.BaseDirectory}res\storage\previous_searches\";
-            int start = GetUrl().IndexOf("q=") + 2;
-            int end = GetUrl().IndexOf("&") - start;
+            string previousCitySearchFile = null;
 
-            if (GetUrl().Contains("geonames"))
+            if (dataURL != null)
             {
-                string cityName = Uri.UnescapeDataString(GetUrl().Substring(start, end).ToLower());
-
-                // just the city name is required and nothing else
-                if (cityName.Contains(","))
+                if (dataURL.Contains("geonames"))
                 {
-                    cityName = cityName.Substring(0, cityName.IndexOf(","));
-                }// end of if block
-
-                string previousCitySearchFile = $@"{previousSearchesPath}gn_sd_{cityName.ReplaceAll(" ", "_")}.json";
-
-                if (File.Exists(previousCitySearchFile))
+                    SetService("geo");
+                }// end of if block'
+                else if (dataURL.Contains("api.here"))
                 {
-                    // use the file from the local storage
-                    strJSON =
-                           File.ReadAllText($"{previousSearchesPath}gn_sd_{cityName.ReplaceAll(" ", "_")}.json");
-                }// end of if block
-                else
-                {
-                    // contact the web service for search results
+                    SetService("here");
+                }// end of else block
+            }// end of if block
+
+            switch (GetService())
+            {
+                case "geo":
+                    string cityName = null;
+                    string currentLocation = null;
+
                     if (UtilityMethod.HasInternetConnection())
                     {
-                        try
+                        // the means that we only have GPS coordinates
+                        if (dataURL.Contains("findNearbyPlaceNameJSON"))
                         {
-                            strJSON = HttpHelper.DownloadUrl(GetUrl());
-                            JSONHelper.SaveToJSONFile(strJSON, previousCitySearchFile);
-                        }// end of try block
-                        catch (Exception e)
-                        {
-                            UtilityMethod.LogMessage("severe", e.Message,
-                                "CityDataService:GetCityData [line: " +
-                                $"{UtilityMethod.GetExceptionLineNumber(e)}]");
-                        }// end of catch block
+                            response = HttpHelper.DownloadUrl(dataURL);
 
+                            CityData currentCityData = null;
+                            List<dynamic> cityDataList = 
+                                JsonConvert.DeserializeObject<List<dynamic>>(response);
+
+                            if (cityDataList != null)
+                            {
+                                cityName = cityDataList[0]["name"].ToString();
+                                string countryName = cityDataList[0]["countryName"].ToString();
+                                string countryCode = cityDataList[0]["countryCode"].ToString();
+                                string localCityName = cityDataList[0]["toponymName"].ToString();
+                                string regionCode = cityDataList[0]["adminCode1"].ToString();
+                                string regionName = cityDataList[0]["countryCode"].ToString().Equals("US") ?
+                                                UtilityMethod.usStatesByCode[regionCode].ToString() :
+                                                null;
+                                float latitude = float.Parse(cityDataList[0]["lat"].ToString());
+                                float longitude = float.Parse(cityDataList[0]["lng"].ToString());
+
+                                currentCityData = new CityData
+                                {
+                                    cityName = cityName,
+                                    countryName = countryName,
+                                    countryCode = countryCode,
+                                    regionCode = regionCode,
+                                    regionName = regionName,
+                                    latitude = latitude,
+                                    longitude = longitude
+                                };
+
+                                if (regionName != null)
+                                {
+                                    currentLocation = cityName + ", " + regionName + ", "
+                                            + countryName;
+                                }// end of if block
+                                else
+                                {
+                                    currentLocation = cityName + ", " + countryName;
+                                }// end of else block
+                            }// end of if block
+                            else
+                            {
+                                // this means that the user entered a city manually
+                                currentLocation = response;
+                            }// end of else block                               
+
+                            cityName = currentLocation;
+                        }// end of if block                                          
+                        else // the URL contains the city name which can be extracted
+                        {
+                            int start = dataURL.IndexOf(QUERY_COMMAND) + QUERY_COMMAND.Length + 1;
+                            int end = dataURL.IndexOf("&");
+
+                            try
+                            {
+                                cityName = Uri.UnescapeDataString(GetUrl().Substring(start, end).ToLower());
+                                cityName = cityName.ReplaceAll("\\W", " ");
+                            }// end of try block
+                            catch (UriFormatException e)
+                            {
+                                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
+                                        TAG + "::handleWeatherData");
+                            }// end of else block
+
+                        }// end of else block
+
+                        // just the city name is required and nothing else
+                        if (cityName != null && cityName.Contains(","))
+                        {
+                            cityName = cityName.Substring(0, cityName.IndexOf(",")).ToLower();
+                        }// end of if block // end of if block
+                                                
+                        StringBuilder fileData = new StringBuilder();
+
+                        if (cityName != null)
+                        {
+                            previousCitySearchFile = $@"{previousSearchesPath}gn_sd_{cityName.ReplaceAll(" ", "_")}.json";
+                        }// end of if block
+
+                        if (File.Exists(previousCitySearchFile))
+                        {
+                            // use the file from the local storage
+                            strJSON =
+                                   File.ReadAllText($"{previousSearchesPath}gn_sd_{cityName.ReplaceAll(" ", "_")}.json");
+                        }// end of if block
+                        else
+                        {
+                            SaveGeoNamesSearchResults(previousCitySearchFile, cityName);
+                        }// end of else block
                     }// end of if block
-                    else
-                    {
-                        UtilityMethod.ShowMessage("No Internet Connection.");
-                    }// end of else block
-                }// end of else block             
-            }// end of if block
+
+                    break;
+                case "here":
+                    // I prefer to use the GeoNames search results as the Here results only returns a single city.
+                    // I might just add if in the future though.
+                    break;
+                default:
+                    break;
+            }// end of switch block          
             
             ProcessCityData();
         }// end of method GetCityData
+
+        private void SaveGeoNamesSearchResults(string previousCitySearchFile, string cityName)
+        {
+            string searchURL;
+
+            if (UtilityMethod.HasInternetConnection())
+            {
+                // now that we have the name of the city, we need some search results from GeoNames
+                try
+                {
+                    int maxRows = 100;
+
+                    // All spaces must be replaced with the + symbols for the HERE Maps web service
+                    if (cityName.Contains(" "))
+                    {
+                        cityName = cityName.Replace(" ", "+");
+                    }// end of if block
+
+                    searchURL = string.Format(
+                        "http://api.geonames.org/searchJSON?{0}={1}&maxRows={2}&username={3}",
+                            QUERY_COMMAND,
+                            cityName.ToLower(),
+                            maxRows,
+                            WidgetUpdateService.geoNameAccount);
+
+                    response = HttpHelper.DownloadUrl(searchURL); // get the search results from the GeoNames web service
+                }// end of try block
+                catch (Exception e)
+                {
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
+                            TAG + "::handleWeatherData [line: " +
+                                    UtilityMethod.GetExceptionLineNumber(e) + "]");
+
+                    response = null;
+                }// end of catch block
+
+                // attempt to store the search results locally if this search was not performed before
+                if (!File.Exists(previousCitySearchFile))
+                {
+                    if (response != null)
+                    {
+                        try
+                        {
+                            if (JSONHelper.SaveToJSONFile(response, previousCitySearchFile))
+                            {
+                                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO,
+                                    "JSON search data stored locally for " + cityName + ".",
+                                        TAG + "::SaveGeoNamesSearchResults");
+                            }// end of if block
+                        }// end of try block
+                        catch (Exception e)
+                        {
+                            UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
+                                TAG + "::handleWeatherData [line: " +
+                                    UtilityMethod.GetExceptionLineNumber(e) + "]");
+                        }// end of catch block
+                    }// end of if block
+                }// end of if block
+            }// end of if block
+        }// end of method saveGeoNamesSearchResults
 
         /// <summary>
         /// Process the data received from the web service.
@@ -265,7 +408,7 @@ namespace WeatherLion
             }// end of if block
             else
             {
-                UtilityMethod.LogMessage("severe", "The web service returned invalid JSON data",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, "The web service returned invalid JSON data",
                     "CityDataService::GetGeoNamesSuggestions");
             }// end of else block
 

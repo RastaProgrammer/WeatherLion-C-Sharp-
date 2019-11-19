@@ -64,7 +64,7 @@ namespace WeatherLion
             }// end of try block 
             catch (Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message, $"{TAG}::Run");
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message, $"{TAG}::Run");
             }// end of catch block            
         }// end of method Run
     }// end of class IconUpdateService

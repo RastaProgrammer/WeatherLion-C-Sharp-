@@ -372,7 +372,7 @@ namespace WeatherLion
             WeatherLionMain.iconPacksLoaded = true;
             StringBuilder packs = new StringBuilder(string.Join(", ", WeatherLionMain.iconPackList.ToArray()));
             packs.Insert(packs.ToString().LastIndexOf(",") + 1, " and");
-            UtilityMethod.LogMessage("info", $"Icon Packs Installed: {packs.ToString()}",
+            UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, $"Icon Packs Installed: {packs.ToString()}",
                 $"{TAG}::LoadInstalledIconPacks");
         }// end of method LoadInstalledIconPacks
                 

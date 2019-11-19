@@ -88,7 +88,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (Exception e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::ExportToXML [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                     return false;
                 }// end of catch block
@@ -139,7 +139,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"{TAG}::ImportFromXML [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block          
 

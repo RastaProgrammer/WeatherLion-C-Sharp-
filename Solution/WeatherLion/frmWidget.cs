@@ -607,12 +607,13 @@ namespace WeatherLion
                 } // end of try block
                 catch (FormatException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CheckAstronomy [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
 
                 StringBuilder currentConditionIcon = new StringBuilder();
-                string currentCondition = WidgetUpdateService.currentCondition.ToString();
+                string currentCondition = UtilityMethod.ValidateCondition(
+                    WidgetUpdateService.currentCondition.ToString());
 
                 if (rn == nf || rn > nf || rn < su)
                 {
@@ -701,6 +702,11 @@ namespace WeatherLion
                     }// end of else block
 
                 }// end of else block 
+
+                if (currentConditionIcon.Length == 0)
+                {
+                    currentConditionIcon.Append("na.png");                   
+                }// end of if block
 
                 string imagePath = $"{WEATHER_IMAGE_PATH_PREFIX}" +
                            $"{WeatherLionMain.storedPreferences.StoredPreferences.IconSet}" +

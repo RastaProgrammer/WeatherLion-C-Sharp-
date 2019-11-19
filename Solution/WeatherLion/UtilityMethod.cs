@@ -1068,6 +1068,13 @@ namespace WeatherLion
 
         #endregion
 
+        public enum LogLevel
+        {
+            SEVERE,
+            INFO,
+            WARNING
+        }
+
         public static DateTime lastUpdated;
         public static bool refreshRequested;
         public static bool weatherWidgetEnabled = true;
@@ -1339,7 +1346,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                LogMessage("severe", e.Message,
+                LogMessage(LogLevel.SEVERE, e.Message,
                     $"{nameof(WeatherLion)}::init [line: {GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -1373,7 +1380,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                LogMessage("severe", e.Message, 
+                LogMessage(LogLevel.SEVERE, e.Message, 
                     $"{TAG}::CreateWorldCitiesDatabase [line: {GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -1403,7 +1410,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                LogMessage("severe", e.Message,
+                LogMessage(LogLevel.SEVERE, e.Message,
                     $"{TAG}::CreateWSADatabase [line: {GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -1440,7 +1447,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                LogMessage("severe", e.Message,
+                LogMessage(LogLevel.SEVERE, e.Message,
                     $"{TAG}::DeleteSiteKeyFromDatabase [line: {GetExceptionLineNumber(e)}]");
 
                 return 0;
@@ -1538,7 +1545,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                LogMessage("severe", e.Message,
+                LogMessage(LogLevel.SEVERE, e.Message,
                     $"{TAG}::GetCityDataFromDatabase [line: {GetExceptionLineNumber(e)}]");
 
                 return null;
@@ -2295,7 +2302,7 @@ namespace WeatherLion
         }// end of method CreateHereCityData
 
         /// <summary>
-        /// dayDateFormat a Uri so that is is compatible with a valid standard <see cref="Uri"/> <see cref="string"/>
+        /// Decode a Uri so that is is compatible with a valid standard <see cref="Uri"/> <see cref="string"/>
         /// </summary>
         /// <param name="uri">The <see cref="Uri"/> <see cref="string"/> to be formatted</param>
         /// <returns>A valid formatted <see cref="Uri"/> <see cref="string"/>.</returns>
@@ -2323,8 +2330,7 @@ namespace WeatherLion
                     "http://api.geonames.org/searchJSON?q=" +
                         EscapeUriString(cityName.ToLower()) +
                             "&maxRows=" + maxRows +
-                            "&username=bungalorasta";
-                            //"&username=" + WidgetUpdateService.geoNameAccount;
+                            "&username=" + WidgetUpdateService.geoNameAccount;
 
             if (HasInternetConnection())
             {
@@ -2482,11 +2488,10 @@ namespace WeatherLion
         public static string Get24HourTime(string time)
         {
             StringBuilder realTime = new StringBuilder(time);
-
+           
             if (!realTime.ToString().Contains(" "))
             {
-                int insertionPoint = time.IndexOf(":") + 2;
-
+                int insertionPoint = time.IndexOf(":") + 2;           
                 realTime = new StringBuilder(time).Insert(time.Length - 2, " ");
             }// end of if block
 
@@ -2623,7 +2628,7 @@ namespace WeatherLion
                     }// end of try block
                     catch (Exception je)
                     {
-                        LogMessage("severe", je.Message,
+                        LogMessage(LogLevel.SEVERE, je.Message,
                             $"UtilityMethod::getSystemIpAddress [line: {UtilityMethod.GetExceptionLineNumber(je)}]");
                     }// end of catch block
                 }// end of if block
@@ -2815,7 +2820,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (Exception e)
                 {
-                    LogMessage("severe", e.Message, "UtilityMethod::IsFoundInJSONStorage");
+                    LogMessage(LogLevel.SEVERE, e.Message, "UtilityMethod::IsFoundInJSONStorage");
                 }// end of catch block
 
                 if (jsonString != null)
@@ -2835,7 +2840,7 @@ namespace WeatherLion
                             !containsNumber && cityName.Equals(cCityName + ", " + cRegionCode, StringComparison.OrdinalIgnoreCase))
                         {
                             found = true;
-                            LogMessage("info", cityName + " was found in the JSON storage.",
+                            LogMessage(LogLevel.INFO, cityName + " was found in the JSON storage.",
                                     TAG + "::IsFoundInJSONStorage");
                         }// end of if block                        
                     }// end of for each loop  
@@ -2879,7 +2884,7 @@ namespace WeatherLion
                             !containsNumber && cityName.Equals(cCityName + ", " + cRegionCode, StringComparison.OrdinalIgnoreCase))
                         {
                             found = true;
-                            LogMessage("info", $"{cityName} was found in the XML storage.",
+                            LogMessage(LogLevel.INFO, $"{cityName} was found in the XML storage.",
                                     "UtilityMethod::IsFoundInXMLStorage");
                         }// end of if block
                     }// end of for loop    		 		
@@ -2887,7 +2892,7 @@ namespace WeatherLion
                 }// end of try block 
                 catch (IOException io)
                 {
-                    LogMessage("severe", io.Message,
+                    LogMessage(LogLevel.SEVERE, io.Message,
                             "UtilityMethod::IsFoundInXMLStorage");
                 }// end of catch block 
             }// end of if block          
@@ -3064,10 +3069,10 @@ namespace WeatherLion
         /// <param name="level">Level of the log</param>
         /// <param name="message">Message to be logged</param>
         /// <param name="inMethod">The method in which the data required logging</param>
-        public static void LogMessage(string level, string message, string inMethod)
+        public static void LogMessage(LogLevel level, string message, string inMethod)
         {
             WidgetLogging logger = new WidgetLogging();
-            logger.Log(message, level.ToLower(), inMethod);                          
+            logger.Log(message, level, inMethod);                          
         }// end of method LogMessage
 
         /// <summary>
@@ -3082,7 +3087,7 @@ namespace WeatherLion
                     $"{WeatherLionMain.PROGRAM_NAME} ({asset})", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // log message
-            UtilityMethod.LogMessage("severe", "Missing: " + asset,
+            UtilityMethod.LogMessage(LogLevel.SEVERE, "Missing: " + asset,
                     "WeatherLionMain::missingAssetPrompt");
 
             Application.Exit(); // terminate the program
@@ -3161,23 +3166,15 @@ namespace WeatherLion
         public static string RetrieveGeoNamesGeoLocationUsingAddress(string wxLocation)
         {
             int maxRows = 10;
-            
-            // All spaces must be replaced with the + symbols for the HERE Maps web service
-            if (wxLocation.Contains(" "))
-            {
-                wxLocation = wxLocation.Replace(" ", "+");
-            }// end of if block
 
-            // All commas must be replaced with the + symbols for the HERE Maps web service
-            if (wxLocation.Contains(","))
-            {
-                wxLocation = wxLocation.Replace(",", "+");
-            }// end of if block
+            wxLocation = wxLocation.Contains(",") ?
+                   wxLocation.Substring(0, wxLocation.IndexOf(",")).ToLower() :
+                   wxLocation;
 
             string strJSON = null;
             string geoUrl =
                     "http://api.geonames.org/searchJSON?" +
-                    "q=" + EscapeUriString(wxLocation.ToLower()) +
+                    "name_equals=" + wxLocation.ToLower() +
                     "&maxRows=" + maxRows +
                     "&username=" + WidgetUpdateService.geoNameAccount;
 
@@ -3189,7 +3186,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (IOException e)
                 {
-                    LogMessage("severe", e.Message,
+                    LogMessage(LogLevel.SEVERE, e.Message,
                         "UtilityMethod::RetrieveGeoNamesGeoLocationUsingAddress [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");                    
                 }// end of catch block
@@ -3228,7 +3225,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (IOException e)
                 {
-                    LogMessage("severe", e.Message,
+                    LogMessage(LogLevel.SEVERE, e.Message,
                         "UtilityMethod::RetrieveGeoNamesGeoLocationUsingAddress [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
@@ -3277,7 +3274,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (IOException e)
                 {
-                    LogMessage("severe", e.Message,
+                    LogMessage(LogLevel.SEVERE, e.Message,
                         "UtilityMethod::retrieveHereGeoLocationUsingAddress [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
@@ -3340,7 +3337,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                LogMessage("severe", "No data returned from " + wxUrl,
+                LogMessage(LogLevel.SEVERE, "No data returned from " + wxUrl,
                         $"UtilityMethod::retrieveWeatherData  [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
 
             }// end of catch block
@@ -3552,7 +3549,7 @@ namespace WeatherLion
             int interval = WeatherLionMain.storedPreferences.StoredPreferences.Interval;
 
             //milliseconds
-            long difference = DateTime.Now.Ticks - lastUpdated.Ticks;
+            long difference = Math.Abs( DateTime.Now.Ticks - lastUpdated.Ticks );
 
             long secondsInMilli = 1000;
             long minutesInMilli = secondsInMilli * 60;
@@ -3587,6 +3584,70 @@ namespace WeatherLion
 
             return true;
         }// end of method ValidCityName
+
+        /// <summary>
+        /// Returns a valid weather condition that is relevant to the application
+        /// </summary>
+        /// <param name="condition">The weather condition to be validated</param>
+        /// <returns>A <see cref="string"/> value representing a valid weather condition</returns>
+        public static string ValidateCondition(string condition)
+        {
+            condition = condition.ToLower();
+
+            if (condition.Contains("until"))
+            {
+                condition = condition.Substring(0, condition.IndexOf("until") - 1).Trim();
+            }// end of if block
+
+            if (condition.Contains("starting"))
+            {
+                condition = condition.Substring(0, condition.IndexOf("starting") - 1).Trim();
+            }// end of if block
+
+            if (condition.Contains("overnight"))
+            {
+                condition = condition.Substring(0, condition.IndexOf("overnight") - 1).Trim();
+            }// end of if block
+
+            if (condition.Contains("night"))
+            {
+                condition = condition.ReplaceAll("night", "").Trim();
+            }// end of if block
+
+            if (condition.Contains("possible"))
+            {
+                condition = condition.ReplaceAll("possible", "").Trim();
+            }// end of if block
+
+            if (condition.Contains("throughout"))
+            {
+                condition = condition.Substring(0, condition.IndexOf("throughout") - 1).Trim();
+            }// end of if block
+
+            if (condition.Contains(" in "))
+            {
+                condition = condition.Substring(0, condition.IndexOf(" in ") - 1).Trim();
+            }// end of if block
+
+            if (condition.ToLower().Contains("and"))
+            {
+                string[] conditions = condition.ToLower().Split(new string[] { "and" },
+                    StringSplitOptions.None);
+
+                condition = conditions[0].Trim();
+            }// end of if block
+
+            if (condition.ToLower().Contains("(day)"))
+            {
+                condition = condition.Replace("(day)", "").Trim();
+            }// end of if block
+            else if (condition.ToLower().Contains("(night)"))
+            {
+                condition = condition.Replace("(night)", "").Trim();
+            }// end of if block
+
+            return condition.ToProperCase();
+        }// end of method ValidateCondition
 
         #endregion
 

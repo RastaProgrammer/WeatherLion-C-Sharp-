@@ -37,7 +37,7 @@ namespace WeatherLion
             }// end of try block
             catch(Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                    $"{TAG}::HasNetworkAccess [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 return false;
             }// end of catch block

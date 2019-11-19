@@ -86,7 +86,7 @@ namespace WeatherLion
                 }// end of try black 
                 catch (Exception e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                          $"{TAG}::init [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
             }// end of if block
@@ -101,7 +101,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (Exception e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::init [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
             }// end of if block
@@ -223,7 +223,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"{TAG}::Decrypt [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -341,9 +341,7 @@ namespace WeatherLion
 
                                 if (WidgetUpdateService.darkSkyApiKey != null)
                                 {
-                                    webAccessGranted.Add("Dark Sky Weather");
-                                    UtilityMethod.LogMessage("info",
-                                        "Dark Sky key loaded!", "LionSecurityManager::LoadAccessProviders");
+                                    webAccessGranted.Add("Dark Sky Weather");                                    
                                 }// end of if block
 
                                 break;
@@ -363,9 +361,7 @@ namespace WeatherLion
                                 if (WidgetUpdateService.geoNameAccount != null)
                                 {
                                     webAccessGranted.Add("GeoNames");
-                                    geoNamesAccountLoaded = true;
-                                    UtilityMethod.LogMessage("info",
-                                        "GeoNames user account loaded!", $"{TAG}::LoadAccessProviders");
+                                    geoNamesAccountLoaded = true;                                    
                                 }// end of if block
 
                                 break;
@@ -383,9 +379,7 @@ namespace WeatherLion
 
                                 if (WidgetUpdateService.openWeatherMapApiKey != null)
                                 {
-                                    webAccessGranted.Add("Open Weather Map");
-                                    UtilityMethod.LogMessage("info",
-                                        "Open Weather Map key loaded!", $"{TAG}::LoadAccessProviders");
+                                    webAccessGranted.Add("Open Weather Map");                                   
                                 }// end of if block
 
                                 break;
@@ -403,9 +397,7 @@ namespace WeatherLion
 
                                 if (WidgetUpdateService.weatherBitApiKey != null)
                                 {
-                                    webAccessGranted.Add("Weather Bit");
-                                    UtilityMethod.LogMessage("info",
-                                        "Weather Bit key loaded!", $"{TAG}::LoadAccessProviders");
+                                    webAccessGranted.Add("Weather Bit");                                    
                                 }// end of if block
 
                                 break;
@@ -433,9 +425,7 @@ namespace WeatherLion
 
                                 if (WidgetUpdateService.hereAppId != null && WidgetUpdateService.hereAppCode != null)
                                 {
-                                    webAccessGranted.Add("Here Maps Weather");
-                                    UtilityMethod.LogMessage("info",
-                                        "Here Maps Weather keys loaded!", $"{TAG}::LoadAccessProviders");
+                                    webAccessGranted.Add("Here Maps Weather");                                    
                                 }// end of if block
                                 else if (WidgetUpdateService.hereAppId != null && WidgetUpdateService.hereAppCode == null)
                                 {
@@ -484,9 +474,7 @@ namespace WeatherLion
 
                                 if (keysMissing.Count == 0)
                                 {
-                                    webAccessGranted.Add("Yahoo! Weather");
-                                    UtilityMethod.LogMessage("info", "Yahoo! Weather keys loaded!",
-                                        $"{TAG}::LoadAccessProviders");
+                                    webAccessGranted.Add("Yahoo! Weather");                                    
                                 }// end of if block
                                 else
                                 {
@@ -523,7 +511,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"{TAG}::LoadAccessProviders [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -548,12 +536,12 @@ namespace WeatherLion
                     fs = s;
                 }// end of else block
 
-                UtilityMethod.LogMessage("info", $"The following access providers were loaded:\n{fs}.",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, $"The following access providers were loaded:\n{fs}.",
                          $"{TAG}::LoadAccessProviders");
             }// end of if block
             else
             {
-                UtilityMethod.LogMessage("severe", "No valid access privelages were stored in the database!",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, "No valid access privelages were stored in the database!",
                         $"{TAG}::LoadAccessProviders");                
             }// end of else block
 
@@ -579,7 +567,7 @@ namespace WeatherLion
 
             if (webAccessGranted.Count >= 1 && !geoNamesAccountLoaded)
             {
-                UtilityMethod.LogMessage("severe", "GeoNames user name not found!",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, "GeoNames user name not found!",
                          $"{TAG}::LoadAccessProviders");
 
                 // confirm that user has a GeoNames account and want's to store it

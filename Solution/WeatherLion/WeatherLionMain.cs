@@ -128,18 +128,18 @@ namespace WeatherLion
         {
             #region WeatherLion launch sequence
 
-            UtilityMethod.LogMessage("info", "Initiating startup...", "WeatherLionMain::Launch");
+            UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, "Initiating startup...", "WeatherLionMain::Launch");
 
             // build the required storage files
             if (BuildRequiredDatabases() == 1)
             {
-                UtilityMethod.LogMessage("info",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO,
                         "All required databases constructed successfully.",
                         "WeatherLionMain::Launch");
             }// end of if block
             else
             {
-                UtilityMethod.LogMessage("severe",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE,
                         "All required databases were not constructed successfully.",
                         "WeatherLionMain::Launch");
             }// end of else block
@@ -251,7 +251,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                          $"WeatherLionMain::AttachDatabase [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 return 0;
             }// end of catch block            
@@ -285,7 +285,7 @@ namespace WeatherLion
                 }// end of try black 
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::BuildRequiredDatabases [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
             }// end of if block
@@ -300,7 +300,7 @@ namespace WeatherLion
                 catch (IOException e)
                 {
 
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"WeatherLionMain::BuildRequiredDatabases [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
             }// end of if block
@@ -314,14 +314,14 @@ namespace WeatherLion
                 }// end of try black 
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::BuildRequiredDatabases [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
             }// end of if block
 
             if (File.Exists(mainStorageFile) && File.Exists(cityStorageFile) && File.Exists(wakStorageFile))
             {
-                UtilityMethod.LogMessage("info", "The required storage files are present.",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, "The required storage files are present.",
                     $"{TAG}::BuildRequiredDatabases");
 
                 // Establish connection with the databases and open it
@@ -333,14 +333,14 @@ namespace WeatherLion
                 }// end of try block
                 catch (Exception e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::BuildRequiredDatabases [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
 
             }// end of if block
             else
             {
-                UtilityMethod.LogMessage("severe", "All the required storage files are not present.",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, "All the required storage files are not present.",
                     $"{TAG}::BuildRequiredDatabases");
                 return 0;
             }// end of else block
@@ -405,9 +405,9 @@ namespace WeatherLion
             }// end of if block
             else
             {
-                UtilityMethod.LogMessage("info", "Necessary requirements met...",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, "Necessary requirements met...",
                         $"{TAG}::Init");
-                UtilityMethod.LogMessage("info", "Launching Weather Widget...",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, "Launching Weather Widget...",
                         $"{TAG}::Init");
             }// end of else block
         }// end of method Init
@@ -431,7 +431,7 @@ namespace WeatherLion
                 }// end of if block
                 else
                 {
-                    UtilityMethod.LogMessage("info",
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO,
                         "Found " + iconPacks.Count + " icon " +
                             (iconPacks.Count > 1 ? "packs..." : "pack..."),
                             $"{TAG}::HealthCheck");
@@ -442,7 +442,7 @@ namespace WeatherLion
                     }// end of if block
                     else if (!iconPacks.Contains(Preference.GetSavedPreferences().StoredPreferences.IconSet))
                     {
-                        UtilityMethod.LogMessage("warning",
+                        UtilityMethod.LogMessage(UtilityMethod.LogLevel.WARNING,
                             $"The {storedPreferences.StoredPreferences.IconSet.ToUpper()}" +
                             $" icon pack could not be found so the default {DEFAULT_ICON_SET.ToUpper()}" +
                             " will be used!", $"{TAG}::HealthCheck");
@@ -461,7 +461,7 @@ namespace WeatherLion
                         }// end of if block
                         else
                         {
-                            UtilityMethod.LogMessage("info", $"Found {imageCount}" +
+                            UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, $"Found {imageCount}" +
                                 (imageCount > 1 ? " images" : " image") + " in the " +
                                 UtilityMethod.ToProperCase(storedPreferences.StoredPreferences.IconSet) +
                                 " icon pack...", $"{TAG}::HealthCheck");
@@ -484,7 +484,7 @@ namespace WeatherLion
                             }// end of if block
                             else
                             {
-                                UtilityMethod.LogMessage("info",
+                                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO,
                                     "Found " + imageCount + (imageCount > 1 ? " images" : " image")
                                     + " in the backgrounds directory...", $"{TAG}::HealthCheck");
                             }// end of else block
@@ -505,7 +505,7 @@ namespace WeatherLion
                             }// end of if block
                             else
                             {
-                                UtilityMethod.LogMessage("info",
+                                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO,
                                     "Found " + imageCount +
                                     (imageCount > 1 ? " images" : " image") +
                                     " in the icons directory...",
@@ -567,7 +567,7 @@ namespace WeatherLion
                             // loop until a city is selected
                             while (PreferencesForm.locationSelected)
                             {
-                                UtilityMethod.LogMessage("warning", "Waiting for location to be set!", 
+                                UtilityMethod.LogMessage(UtilityMethod.LogLevel.WARNING, "Waiting for location to be set!", 
                                     $"{TAG}::LocationCheck");
                             }// end of while loop
 

@@ -140,7 +140,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (Exception e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::GetPreferencesData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
             }// end of if block
@@ -162,7 +162,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CreatedefaultPreferencesPropertiesFile [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
@@ -175,7 +175,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CreatedefaultPreferencesPropertiesFile [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
@@ -195,13 +195,13 @@ namespace WeatherLion
             }// end of try block
             catch (FileNotFoundException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CreatedefaultPreferencesPropertiesFile [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
             catch (IOException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CreatedefaultPreferencesPropertiesFile [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
@@ -223,7 +223,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CreatedefaultPreferencesPropertiesFile [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
@@ -236,7 +236,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CreatedefaultPreferencesPropertiesFile [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
@@ -258,13 +258,13 @@ namespace WeatherLion
             }// end of try block
             catch (FileNotFoundException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CreatedefaultPreferencesPropertiesFile [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
             catch (IOException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"{TAG}::CreatedefaultPreferencesPropertiesFile [line: " +
                         $"{UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
@@ -344,18 +344,18 @@ namespace WeatherLion
                 }// end of try block
                 catch (FileNotFoundException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"Preference::GetSavedPreferences [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of try block
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"Preference::GetSavedPreferences [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of try block
             }// end of try block
             catch (IOException ex)
             {
-                UtilityMethod.LogMessage("severe", ex.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, ex.Message,
                         $"Preference::GetSavedPreferences [line: {UtilityMethod.GetExceptionLineNumber(ex)}]");
             }// end of try block            
 
@@ -394,18 +394,18 @@ namespace WeatherLion
                 }// end of try block
                 catch (FileNotFoundException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"Preference::GetSavedPreferences [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of try block
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"Preference::GetSavedPreferences [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of try block
             }// end of try block
             catch (IOException ex)
             {
-                UtilityMethod.LogMessage("severe", ex.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, ex.Message,
                         $"Preference::GetSavedPreferences [line: {UtilityMethod.GetExceptionLineNumber(ex)}]");
             }// end of try block 
 

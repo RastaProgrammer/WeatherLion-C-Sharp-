@@ -51,7 +51,7 @@ namespace WeatherLion
         private static WeatherBitWeatherDataItem.WeatherData weatherBitWx;
         private static WeatherBitWeatherDataItem.SixteenDayForecastData weatherBitFx;
         //private static WeatherUndergroundDataItem underground;
-        // private static YahooWeatherDataItem yahoo; // Deprecated code that Yahoo! replaced in 2019	
+        // private static YahooWeatherDataItem yahoo; // Deprecated code that Yahoo! Replaced in 2019	
         private static YahooWeatherYdnDataItem yahoo19;
         private static YrWeatherDataItem yrWeatherData;
 
@@ -293,7 +293,7 @@ namespace WeatherLion
                                         UtilityMethod.EscapeUriString(currentCity.ToString()) +
                                             "&units=I&key=" + weatherBitApiKey);
 
-                            // Sixteen day forecast will be used as it contains more relevant data
+                            // Sixteen day forecast will be used as it Contains more relevant data
                             fxUrl.Clear();
                             fxUrl.Append(
                                     "https://api.weatherbit.io/v2.0/forecast/daily?city=" +
@@ -307,7 +307,7 @@ namespace WeatherLion
                             }// end of try block
                             catch (Exception e)
                             {
-                                UtilityMethod.LogMessage("severe", e.Message,
+                                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                                   $"{nameof(WeatherLion)}::GetWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                                 strJSON = null;
                             }// end of catch block
@@ -512,7 +512,7 @@ namespace WeatherLion
             }// end of if block             
             else
             {
-                // if the property value contains and equal sign then the user wants to access a field
+                // if the property value Contains and equal sign then the user wants to access a field
                 if (propertyValue.Contains("="))
                 {
                     string[] func = propertyValue.Split('=');
@@ -532,7 +532,7 @@ namespace WeatherLion
             {
                 if (strJSON == null)
                 {
-                    UtilityMethod.LogMessage("severe", "No weather data received from the provider.",
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, "No weather data received from the provider.",
                         "WidgetUpdateService::done");
                     return;
                 }// end of if block                 
@@ -600,7 +600,7 @@ namespace WeatherLion
                             case WeatherLionMain.YR_WEATHER:
                                 yrWeatherData = new YrWeatherDataItem();
                                 YrWeatherDataItem.DeserializeYrXML(strJSON[0], ref yrWeatherData);
-                                yrWeatherData = YrWeatherDataItem.yrWeatherDataItem;
+                                //yrWeatherData = YrWeatherDataItem.yrWeatherDataItem;
                                 LoadYrWeather();
 
                                 break;
@@ -640,7 +640,7 @@ namespace WeatherLion
                     }// end of try block
                     catch (Exception e)
                     {
-                        UtilityMethod.LogMessage("severe", e.Message,
+                        UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                            $"WidgetUpdateService::ProcessWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
 
                         frmWeatherWidget.dataLoadedSuccessfully = false;
@@ -696,10 +696,10 @@ namespace WeatherLion
                         {
                             Thread.Sleep(scheduleTime);
 
-                            UtilityMethod.LogMessage("info", "Waiting to retry service provider...",
+                            UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, "Waiting to retry service provider...",
                                     "WidgetUpdateService::ProcessWeatherData");
 
-                            UtilityMethod.LogMessage("info", "Retrying service provider...",
+                            UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, "Retrying service provider...",
                                     "WidgetUpdateService::ProcessWeatherData");
 
                             frmWeatherWidget.reAttempted = true;
@@ -712,7 +712,7 @@ namespace WeatherLion
 
                         if (frmWeatherWidget.usingPreviousData && frmWeatherWidget.reAttempted)
                         {
-                            UtilityMethod.LogMessage("severe", $"Data service responded with: {strJSON.ToString()}",
+                            UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, $"Data service responded with: {strJSON.ToString()}",
                                    "WidgetUpdateService::ProcessWeatherData");
 
                             // return to the previous data service
@@ -830,7 +830,7 @@ namespace WeatherLion
             } // end of try block
             catch (FormatException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                        $"WidgetLionWidget::LoadDarkSkyWeather [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -1054,12 +1054,19 @@ namespace WeatherLion
             // if the code gets to here then all was loaded successfully
             frmWeatherWidget.dataLoadedSuccessfully = true;
 
-            wXML = new WeatherDataXMLService(WeatherLionMain.DARK_SKY, DateTime.Now,
-                   currentCity.ToString(), currentCountry.ToString(), currentCondition.ToString(),
-                   currentTemp.ToString().Substring(0, currentTemp.ToString().IndexOf(DEGREES)).Trim(),
-                   currentFeelsLikeTemp.ToString(), currentHigh.ToString(), currentLow.ToString(),
-                   currentWindSpeed.ToString(), currentWindDirection.ToString(), currentHumidity.ToString(),
-                   sunriseTime.ToString(), sunsetTime.ToString(), currentFiveDayForecast);
+            if (currentTemp.ToString().Contains(DEGREES))
+            {
+                currentTemp = new StringBuilder(
+                    currentTemp.ToString().Substring(
+                        0, currentTemp.ToString().IndexOf(DEGREES)).Trim());
+            }// end of if block
+
+            wXML = new WeatherDataXMLService(WeatherLionMain.OPEN_WEATHER, DateTime.Now,
+                    currentCity.ToString(), currentCountry.ToString(), currentCondition.ToString(),
+                    currentTemp.ToString(), currentFeelsLikeTemp.ToString(), currentHigh.ToString(),
+                    currentLow.ToString(), currentWindSpeed.ToString(), currentWindDirection.ToString(),
+                    currentHumidity.ToString(), sunriseTime.ToString(),
+                    sunsetTime.ToString(), currentFiveDayForecast);
 
             wXML.ProcessData();
         }// end of method LoadDarkSkyWeather
@@ -1136,7 +1143,7 @@ namespace WeatherLion
             } // end of try block
             catch (FormatException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"WidgetLionWidget::LoadHereMapsWeather [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -1246,7 +1253,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (Exception pe)
                 {
-                    UtilityMethod.LogMessage("severe", pe.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, pe.Message,
                          $"WidgetLionWidget::LoadHereMapsWeather [line: {UtilityMethod.GetExceptionLineNumber(pe)}]");
                 }// end of catch block                              
 
@@ -1374,12 +1381,19 @@ namespace WeatherLion
             // if the code gets to here then all was loaded successfully
             frmWeatherWidget.dataLoadedSuccessfully = true;
 
-            wXML = new WeatherDataXMLService(WeatherLionMain.HERE_MAPS, DateTime.Now,
+            if (currentTemp.ToString().Contains(DEGREES))
+            {
+                currentTemp = new StringBuilder(
+                    currentTemp.ToString().Substring(
+                        0, currentTemp.ToString().IndexOf(DEGREES)).Trim());
+            }// end of if block
+
+            wXML = new WeatherDataXMLService(WeatherLionMain.OPEN_WEATHER, DateTime.Now,
                     currentCity.ToString(), currentCountry.ToString(), currentCondition.ToString(),
-                    currentTemp.ToString().Substring(0, currentTemp.ToString().IndexOf(DEGREES)).Trim(),
-                    currentFeelsLikeTemp.ToString(), currentHigh.ToString(), currentLow.ToString(),
-                    currentWindSpeed.ToString(), currentWindDirection.ToString(), currentHumidity.ToString(),
-                    sunriseTime.ToString(), sunsetTime.ToString(), currentFiveDayForecast);
+                    currentTemp.ToString(), currentFeelsLikeTemp.ToString(), currentHigh.ToString(),
+                    currentLow.ToString(), currentWindSpeed.ToString(), currentWindDirection.ToString(),
+                    currentHumidity.ToString(), sunriseTime.ToString(),
+                    sunsetTime.ToString(), currentFiveDayForecast);
 
             wXML.ProcessData();
         }// end of method LoadHereMapsWeather
@@ -1449,7 +1463,7 @@ namespace WeatherLion
             } // end of try block
             catch (FormatException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"WidgetLionWidget::LoadHereMapsWeather [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -1694,12 +1708,19 @@ namespace WeatherLion
             // if the code gets to here then all was loaded successfully
             frmWeatherWidget.dataLoadedSuccessfully = true;
 
+            if (currentTemp.ToString().Contains(DEGREES))
+            {
+                currentTemp = new StringBuilder(
+                    currentTemp.ToString().Substring(
+                        0, currentTemp.ToString().IndexOf(DEGREES)).Trim());
+            }// end of if block
+
             wXML = new WeatherDataXMLService(WeatherLionMain.OPEN_WEATHER, DateTime.Now,
                     currentCity.ToString(), currentCountry.ToString(), currentCondition.ToString(),
-                    currentTemp.ToString().Substring(0, currentTemp.ToString().IndexOf(DEGREES)).Trim(),
-                    currentFeelsLikeTemp.ToString(), currentHigh.ToString(), currentLow.ToString(),
-                    currentWindSpeed.ToString(), currentWindDirection.ToString(), currentHumidity.ToString(),
-                    sunriseTime.ToString(), sunsetTime.ToString(), currentFiveDayForecast);
+                    currentTemp.ToString(), currentFeelsLikeTemp.ToString(), currentHigh.ToString(),
+                    currentLow.ToString(), currentWindSpeed.ToString(), currentWindDirection.ToString(),
+                    currentHumidity.ToString(), sunriseTime.ToString(),
+                    sunsetTime.ToString(), currentFiveDayForecast);
 
             wXML.ProcessData();
         }// end of method LoadOpenWeather
@@ -1779,7 +1800,7 @@ namespace WeatherLion
             } // end of try block
             catch (FormatException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"WidgetLionWidget::LoadHereMapsWeather [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -1890,7 +1911,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (Exception e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                          $"{nameof(WeatherLion)}::LoadWeatherBitWeather [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block
                
@@ -1932,7 +1953,8 @@ namespace WeatherLion
                         ts.Append(fCondition.ToString());
                         fCondition.Clear();
                         fCondition.Append(UtilityMethod.ToProperCase(ts.ToString()));
-                        ((Label)frmWeatherWidget.Controls.Find($"lblDay{i}Day", true)[0]).Text = fDay;
+                        UpdateWidgetControl((Label)frmWeatherWidget.Controls.Find($"lblDay{i}Day", true)[0],
+                            "Text", string.Format(dayDateFormat, fDay));                       
 
                         // Load current forecast condition weather image
                         if (fCondition.ToString().ToLower().Contains("(day)"))
@@ -2096,7 +2118,7 @@ namespace WeatherLion
             } // end of try block
             catch (FormatException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"WidgetLionWidget::LoadDarkSkyWeather [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -2371,7 +2393,7 @@ namespace WeatherLion
             } // end of try block
             catch (FormatException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"WidgetLionWidget::LoadDarkSkyWeather [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -2559,12 +2581,19 @@ namespace WeatherLion
             // if the code gets to here then all was loaded successfully
             frmWeatherWidget.dataLoadedSuccessfully = true;
 
-            wXML = new WeatherDataXMLService(WeatherLionMain.YR_WEATHER, timeUpdated,
+            if (currentTemp.ToString().Contains(DEGREES))
+            {
+                currentTemp = new StringBuilder(
+                    currentTemp.ToString().Substring(
+                        0, currentTemp.ToString().IndexOf(DEGREES)).Trim());
+            }// end of if block
+
+            wXML = new WeatherDataXMLService(WeatherLionMain.OPEN_WEATHER, DateTime.Now,
                     currentCity.ToString(), currentCountry.ToString(), currentCondition.ToString(),
-                    currentTemp.ToString().Substring(0, currentTemp.ToString().IndexOf(DEGREES)).Trim(),
-                    currentFeelsLikeTemp.ToString(), currentHigh.ToString(), currentLow.ToString(),
-                    currentWindSpeed.ToString(), currentWindDirection.ToString(), currentHumidity.ToString(),
-                    sunriseTime.ToString(), sunsetTime.ToString(), currentFiveDayForecast);
+                    currentTemp.ToString(), currentFeelsLikeTemp.ToString(), currentHigh.ToString(),
+                    currentLow.ToString(), currentWindSpeed.ToString(), currentWindDirection.ToString(),
+                    currentHumidity.ToString(), sunriseTime.ToString(),
+                    sunsetTime.ToString(), currentFiveDayForecast);
 
             wXML.ProcessData();
         }// end of method LoadYrWeather
@@ -2631,7 +2660,7 @@ namespace WeatherLion
                 }// end of try block 
                 catch (IOException e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"WidgetUpdateService::LoadPreviousWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block 
             }// end of if block    	
@@ -2682,7 +2711,7 @@ namespace WeatherLion
                 xmlDate.Clear();
                 xmlDate.Append(xmlProvider.SelectSingleNode("//Date").InnerText);
 
-                // use the timezones hashtable to replace any possible timezone abbreviations.
+                // use the timezones hashtable to Replace any possible timezone abbreviations.
                 // C# requires time values instead of these abbreviations.
                 foreach (string key in UtilityMethod.worldTimezonesOffsets.Keys)
                 {
@@ -2698,7 +2727,7 @@ namespace WeatherLion
             }// end of try block
             catch (Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"WidgetUpdateService::LoadPreviousWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
@@ -2728,7 +2757,7 @@ namespace WeatherLion
             } // end of try block
             catch (FormatException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"WidgetUpdateService::LoadPreviousWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block 
 
@@ -2803,7 +2832,7 @@ namespace WeatherLion
                     xmlDate.Clear();
                     xmlDate.Append(xmlForecastDate);
 
-                    // use the timezones hashtable to replace any possible timezone abbreviations.
+                    // use the timezones hashtable to Replace any possible timezone abbreviations.
                     // C# requires time values instead of these abbreviations.
                     foreach (string key in UtilityMethod.worldTimezonesOffsets.Keys)
                     {
@@ -2819,7 +2848,7 @@ namespace WeatherLion
                 }// end of try block
                 catch (Exception e)
                 {
-                    UtilityMethod.LogMessage("severe", e.Message,
+                    UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                         $"WidgetUpdateService::LoadPreviousWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                 }// end of catch block                     
 
@@ -2934,8 +2963,8 @@ namespace WeatherLion
                         // Display weather data on widget
                         UpdateWidgetControl(frmWeatherWidget.lblCurrentTemperature, "Text", $"{currentTemp}{tempUnits}{tempUnits}");
                         UpdateWidgetControl(frmWeatherWidget.lblFeelsLike, "Text", $"{frmWeatherWidget.FEELS_LIKE} {currentFeelsLikeTemp.ToString()}{DEGREES}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}");
+                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}{DEGREES}");
+                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}{DEGREES}");
                         UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayHigh,
                             $"Current High Temp {currentHigh}{DEGREES}F");
                         UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayLow,
@@ -3030,8 +3059,8 @@ namespace WeatherLion
                         // Display weather data on widget
                         UpdateWidgetControl(frmWeatherWidget.lblCurrentTemperature, "Text", $"{currentTemp}{tempUnits}{tempUnits}");
                         UpdateWidgetControl(frmWeatherWidget.lblFeelsLike, "Text", $"{frmWeatherWidget.FEELS_LIKE} {currentFeelsLikeTemp.ToString()}{DEGREES}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}");
+                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}{DEGREES}");
+                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}{DEGREES}");
                         UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayHigh,
                             $"Current High Temp {currentHigh}{DEGREES}F");
                         UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayLow,
@@ -3122,8 +3151,8 @@ namespace WeatherLion
                         // Display weather data on widget
                         UpdateWidgetControl(frmWeatherWidget.lblCurrentTemperature, "Text", $"{currentTemp}{tempUnits}{tempUnits}");
                         UpdateWidgetControl(frmWeatherWidget.lblFeelsLike, "Text", $"{frmWeatherWidget.FEELS_LIKE} {currentFeelsLikeTemp.ToString()}{DEGREES}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}");
+                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}{DEGREES}");
+                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}{DEGREES}");
                         UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayHigh,
                             $"Current High Temp {currentHigh}{DEGREES}F");
                         UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayLow,
@@ -3179,11 +3208,13 @@ namespace WeatherLion
 
                         if (WeatherLionMain.storedPreferences.StoredPreferences.UseMetric)
                         {
-                            currentTemp.Clear();
-                            currentTemp.Append($"{Math.Round(UtilityMethod.FahrenheitToCelsius((float)fl))}");
+                            float ct = (float) Math.Round(UtilityMethod.FahrenheitToCelsius((float)
+                                   weatherBitWx.data[0].temp));
 
+                            currentTemp.Clear();
+                            currentTemp.Append($"{ct}");
                             currentFeelsLikeTemp.Clear();
-                            currentFeelsLikeTemp.Append($"{Math.Round(UtilityMethod.FahrenheitToCelsius((float)weatherBitWx.data[0].appTemp))}");
+                            currentFeelsLikeTemp.Append($"{Math.Round(UtilityMethod.FahrenheitToCelsius((float)fl))}");
 
                             // not supplied by provider
                             currentHigh.Clear();
@@ -3202,7 +3233,7 @@ namespace WeatherLion
                             currentTemp.Append($"{Math.Round((float)fl)}");
 
                             currentFeelsLikeTemp.Clear();
-                            currentFeelsLikeTemp.Append($"{Math.Round((float)weatherBitWx.data[0].appTemp)}");
+                            currentFeelsLikeTemp.Append($"{Math.Round((float)fl)}");
 
                             // not supplied by provider
                             currentHigh.Clear();
@@ -3219,8 +3250,8 @@ namespace WeatherLion
                         // Display weather data on widget
                         UpdateWidgetControl(frmWeatherWidget.lblCurrentTemperature, "Text", $"{currentTemp}{tempUnits}{tempUnits}");
                         UpdateWidgetControl(frmWeatherWidget.lblFeelsLike, "Text", $"{frmWeatherWidget.FEELS_LIKE} {currentFeelsLikeTemp.ToString()}{DEGREES}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}");
+                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}{DEGREES}");
+                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}{DEGREES}");
                         UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayHigh,
                             $"Current High Temp {currentHigh}{DEGREES}F");
                         UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayLow,
@@ -3252,11 +3283,11 @@ namespace WeatherLion
                             } // end of try block
                             catch (FormatException e)
                             {
-                                UtilityMethod.LogMessage("severe", e.Message,
+                                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                                     $"WidgetUpdateService::LoadPreviousWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                             }// end of catch block                             
 
-                            if (fxDate.Equals(today))
+                            if (fxDate.Equals(today.ToString()))
                             {
                                 currentHigh.Clear();
                                 currentHigh.Append($"{Math.Round(wFdf[i].max_temp)}");
@@ -3264,9 +3295,12 @@ namespace WeatherLion
                                 currentLow.Clear();
                                 currentLow.Append($"{Math.Round(wFdf[i].min_temp)}");
 
+                                //UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text",
+                                //     (int.Parse(currentHigh.ToString()) > int.Parse(currentTemp.ToString().Replace("°F", ""))
+                                //     ? currentHigh.ToString() : int.Parse(currentTemp.ToString().Replace("°F", "")) + DEGREES));
+
                                 UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text",
-                                     (int.Parse(currentHigh.ToString()) > int.Parse(currentTemp.ToString().Replace("°F", ""))
-                                     ? currentHigh.ToString() : int.Parse(currentTemp.ToString().Replace("°F", "")) + DEGREES));
+                                    $"{currentHigh}{DEGREES}");
                                 UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text",
                                     $"{currentLow}{DEGREES}");
 
@@ -3376,12 +3410,6 @@ namespace WeatherLion
                             {
                                 if (fDate.Equals(today.ToString()))
                                 {
-                                    currentHigh.Clear();
-                                    currentHigh.Append($"{Math.Round(UtilityMethod.FahrenheitToCelsius((float)yFdf[i].high))}");
-
-                                    currentLow.Clear();
-                                    currentLow.Append($"{Math.Round(UtilityMethod.FahrenheitToCelsius((float)yFdf[i].low))}");
-
                                     UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}{DEGREES}");
                                     UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}{DEGREES}");
 
@@ -3462,14 +3490,10 @@ namespace WeatherLion
                         }// end of else block
 
                         // Display weather data on widget
-                        UpdateWidgetControl(frmWeatherWidget.lblCurrentTemperature, "Text", $"{currentTemp}{tempUnits}{tempUnits}");
-                        UpdateWidgetControl(frmWeatherWidget.lblFeelsLike, "Text", $"{frmWeatherWidget.FEELS_LIKE} {currentFeelsLikeTemp.ToString()}{DEGREES}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}");
-                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}");
-                        UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayHigh,
-                            $"Current High Temp {currentHigh}{DEGREES}F");
-                        UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayLow,
-                           $"Current Low Temp {currentLow}{DEGREES}F");
+                        UpdateWidgetControl(frmWeatherWidget.lblCurrentTemperature, 
+                            "Text", $"{currentTemp}{tempUnits}{tempUnits}");
+                        UpdateWidgetControl(frmWeatherWidget.lblFeelsLike, "Text",
+                            $"{frmWeatherWidget.FEELS_LIKE} {currentFeelsLikeTemp.ToString()}{DEGREES}");                        
                         UpdateWidgetControl(frmWeatherWidget.btnWindReading, "Text",
                            $"{currentWindDirection} {currentWindSpeed}" +
                            $" {(WeatherLionMain.storedPreferences.StoredPreferences.UseMetric ? " km/h" : " mph")}");
@@ -3483,7 +3507,12 @@ namespace WeatherLion
                         //float fLow = 0;     // forecasted low
                         DateTime currentDate = new DateTime();
                         dailyReading = new Dictionary<string, float[,]>();
-                        int x = 0;                        
+                        int x = 0;
+
+                        // current temperature
+                        int nt = (int) Math.Round(float.Parse(currentTemp.ToString()));
+                        float lowestTempToday = nt;
+                        float highestTempToday = nt;
 
                         // get the highs and lows from the forecast first
                         foreach (YrWeatherDataItem.Forecast wxTempReading in fdf)
@@ -3493,7 +3522,9 @@ namespace WeatherLion
                             if (x == 1)
                             {
                                 currentDate = wxTempReading.timeFrom;
+                                fHigh.Clear();
                                 fHigh.Append((float)Math.Round(UtilityMethod.CelsiusToFahrenheit(wxTempReading.temperatureValue)));
+                                fLow.Clear();
                                 fLow.Append((float)Math.Round(UtilityMethod.CelsiusToFahrenheit(wxTempReading.temperatureValue)));
                             }// end of if block
 
@@ -3521,7 +3552,45 @@ namespace WeatherLion
                                 float[,] hl = { { float.Parse(fHigh.ToString()), float.Parse(fLow.ToString()) } };
                                 dailyReading.Add(string.Format("{0:MMMM dd, yyyy}", wxTempReading.timeFrom), hl);
                             }// end of if block
-                        }// end of first for each loop 
+                        }// end of first for each loop
+
+                        if (highestTempToday < float.Parse(fHigh.ToString()))
+                        {
+                            highestTempToday = float.Parse(fHigh.ToString());
+                        }// end of if block
+
+                        if (lowestTempToday > float.Parse(fLow.ToString()))
+                        {
+                            lowestTempToday = float.Parse(fLow.ToString());
+                        }// end of if block
+
+                        if (WeatherLionMain.storedPreferences.StoredPreferences.UseMetric)
+                        {
+                            int celciusHigh = (int)Math.Round(UtilityMethod.CelsiusToFahrenheit(highestTempToday));
+                            int celciusLow = (int)Math.Round(UtilityMethod.CelsiusToFahrenheit(lowestTempToday));
+
+                            UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{celciusHigh}{DEGREES}");
+                            UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{celciusLow}{DEGREES}");
+                            UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayHigh,
+                                $"Current High Temp {celciusHigh}{DEGREES}F");
+                            UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayLow,
+                               $"Current Low Temp {celciusLow}{DEGREES}F");
+                        }// end of if block
+                        else
+                        {
+                            UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{Math.Round(highestTempToday)}{DEGREES}");
+                            UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{Math.Round(lowestTempToday)}{DEGREES}");
+                            UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayHigh,
+                                $"Current High Temp {Math.Round(highestTempToday)}{DEGREES}F");
+                            UtilityMethod.AddControlToolTip(frmWeatherWidget.lblDayLow,
+                               $"Current Low Temp {Math.Round(lowestTempToday)}{DEGREES}F");                                                       
+                        } // end of else block                                     
+
+                        currentHigh.Clear();
+                        currentHigh.Append($"{Math.Round(highestTempToday)}");
+
+                        currentLow.Clear();
+                        currentLow.Append($"{Math.Round(lowestTempToday)}");
 
                         x = 0;
 
@@ -3535,11 +3604,19 @@ namespace WeatherLion
                             // the first time period is always the current reading for this moment
                             if (x == 1)
                             {
-                                fHigh.Clear();
-                                fLow.Clear();
 
-                                fHigh.Append(dailyReading[string.Format("{0:MMMM dd, yyyy}", wxForecast.timeFrom)][0, 0]);
-                                fLow.Append(dailyReading[string.Format("{0:MMMM dd, yyyy}", wxForecast.timeFrom)][0, 1]);
+                                if (!string.Format("{0:MMMM dd, yyyy}",
+                                    wxForecast.timeFrom).Equals(string.Format("{0:MMMM dd, yyyy}", currentDate)))
+                                {
+                                    fHigh.Clear();
+                                    fLow.Clear();
+
+                                    fHigh.Append(dailyReading[string.Format("{0:MMMM dd, yyyy}", wxForecast.timeFrom)][0, 0]);
+                                    fLow.Append(dailyReading[string.Format("{0:MMMM dd, yyyy}", wxForecast.timeFrom)][0, 1]);
+                                }//end of else block                                    
+
+                                today.Clear();
+                                today.Append(string.Format("{0:MMMM dd, yyyy}", DateTime.Now));
 
                                 if (WeatherLionMain.storedPreferences.StoredPreferences.UseMetric)
                                 {
@@ -3550,29 +3627,31 @@ namespace WeatherLion
                                         UtilityMethod.CelsiusToFahrenheit(
                                             dailyReading[string.Format("{0:MMMM dd, yyyy}", wxForecast.timeFrom)][0, 1])));
 
-                                    UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{fHigh}{DEGREES}");
-                                    UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{fLow}{DEGREES}");
-
-                                    temps.Clear();
-                                    temps.Append(string.Format("{0}° {1}°", int.Parse(fLow.ToString()), int.Parse(fHigh.ToString())));
+                                    if (fDate.Equals(today.ToString()))
+                                    {
+                                        temps.Clear();
+                                        temps.Append(string.Format("{0}° {1}°", UtilityMethod.CelsiusToFahrenheit(lowestTempToday)
+                                            , UtilityMethod.CelsiusToFahrenheit(highestTempToday)));
+                                    }// end of if block
+                                    else
+                                    {
+                                        temps.Clear();
+                                        temps.Append(string.Format("{0}° {1}°", int.Parse(fLow.ToString()), int.Parse(fHigh.ToString())));
+                                    }// end of else block 
 
                                 }// end of if block
                                 else
                                 {
-                                    if (fDate.Equals(string.Format("{0:MMMM dd, yyyy}", new DateTime())))
+                                    if (fDate.Equals(today.ToString()))
                                     {
-                                        currentHigh.Clear();
-                                        currentHigh.Append($"{int.Parse(fHigh.ToString())}");
-
-                                        currentLow.Clear();
-                                        currentHigh.Append($"{int.Parse(fLow.ToString())}");
-
-                                        UpdateWidgetControl(frmWeatherWidget.lblDayHigh, "Text", $"{currentHigh}{DEGREES}");
-                                        UpdateWidgetControl(frmWeatherWidget.lblDayLow, "Text", $"{currentLow}{DEGREES}");
+                                        temps.Clear();
+                                        temps.Append(string.Format("{0}° {1}°", lowestTempToday, highestTempToday));
                                     }// end of if block
-
-                                    temps.Clear();
-                                    temps.Append(string.Format("{0}° {1}°", int.Parse(fLow.ToString()), int.Parse(fHigh.ToString())));
+                                    else
+                                    {
+                                        temps.Clear();
+                                        temps.Append(string.Format("{0}° {1}°", int.Parse(fLow.ToString()), int.Parse(fHigh.ToString())));
+                                    }// end of else block                                    
                                 }// end of else block
 
                                 UpdateWidgetControl((Label)frmWeatherWidget.Controls.Find($"lblDay{i}Temps", true)[0],
@@ -3673,7 +3752,7 @@ namespace WeatherLion
                         xmlDate.Clear();
                         xmlDate.Append(xmlForecastDate);
 
-                        // use the timezones hashtable to replace any possible timezone abbreviations.
+                        // use the timezones hashtable to Replace any possible timezone abbreviations.
                         // C# requires time values instead of these abbreviations.
                         foreach (string key in UtilityMethod.worldTimezonesOffsets.Keys)
                         {
@@ -3689,7 +3768,7 @@ namespace WeatherLion
                     }// end of try block
                     catch (Exception e)
                     {
-                        UtilityMethod.LogMessage("severe", e.Message,
+                        UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                             $"WidgetUpdateService::LoadPreviousWeatherData [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
                     }// end of catch block
 
@@ -3752,7 +3831,7 @@ namespace WeatherLion
             // Update the color of the temperature label
             UpdateWidgetControl(frmWeatherWidget.lblCurrentTemperature, "ForeColor", UtilityMethod.TemperatureColor(int.Parse(
                 UtilityMethod.ReplaceAll(currentTemp.ToString(), "\\D", ""))).Name);          
-        }// end of method UpdateTemps       
+        }// end of method UpdateTemps            
 
         /// <summary>
         /// Executes the <see cref="Thread"/>.

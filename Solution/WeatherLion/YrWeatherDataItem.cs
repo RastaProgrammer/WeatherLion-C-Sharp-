@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 #region Code Details
@@ -104,7 +106,7 @@ namespace WeatherLion
             else
             {
                 XmlDocument weatherXML = new XmlDocument();
-                weatherXML.Load(xmlString);
+                weatherXML.LoadXml(xmlString);
 
                 XmlNodeList xnlCurrentLocation = weatherXML.SelectNodes("//location");
 
@@ -123,6 +125,7 @@ namespace WeatherLion
                 yrWeatherData.sunset = DateTime.Parse(weatherXML.SelectSingleNode("//sun").Attributes["set"].Value);
 
                 XmlNodeList elemList = weatherXML.SelectNodes("//forecast/tabular/time");
+                yrWeatherData.forecast = new List<Forecast>();
 
                 for (int i = 0; i < elemList.Count; i++)
                 {
@@ -142,7 +145,7 @@ namespace WeatherLion
                     string tempUnit = elemList[i].SelectSingleNode("temperature").Attributes["unit"].Value;
                     float tempValue = float.Parse(elemList[i].SelectSingleNode("temperature").Attributes["value"].Value);
                     string pressureUnit = elemList[i].SelectSingleNode("pressure").Attributes["unit"].Value;
-                    float pressureValue = float.Parse(elemList[i].SelectSingleNode("pressure").Attributes["value"].Value);
+                    float pressureValue = float.Parse(elemList[i].SelectSingleNode("pressure").Attributes["value"].Value);                                      
 
                     yrWeatherData.forecast.Add(new Forecast(timeFrom, timeTo, timePeriod, symNum,
                                                symNumEx, symName, symVar, precipValue,
@@ -153,5 +156,38 @@ namespace WeatherLion
                 return true;
             }// end of else block           
         }// end of method DeserializeYrXML
-    }// end of class YrWeatherDataItem
+
+        /// <summary>
+        /// Removes unwanted escape characters from a string if the exists
+        /// </summary>
+        /// <param name="data">The <see cref="string"/> that could possibly contain unwanted characters</param>
+        /// <returns>A <see cref="string"/>n with all inappropriate characters removed</returns>
+        public static string RemoveEscapeCharacters(string data)
+        {
+            StringBuilder sb = new StringBuilder();
+            string[] parts = data.Split(
+                new char[] { ' ', '\a', '\b', '\n', '\t', '\r', '\f', '\v' },
+                    StringSplitOptions.RemoveEmptyEntries);
+            int size = parts.Length;
+            string escapedData;
+
+            for (int i = 0; i < size; i++)
+            {
+                sb.AppendFormat("{0} ", parts[i]);
+            }// end of for loop
+
+            if (sb.Length > 0)
+            {
+                // This means that characters were found and removed
+                escapedData = Regex.Replace(sb.ToString(), "\"", "'");
+
+                return escapedData.Trim();
+            }// end of if block
+            else
+            {
+                // non of the specified characters were found
+                return data;
+            }// end of else block
+        }// end of method RemoveEscapeCharacters
+    }// end of class YrWeatherDataItem    
 }// end of namespace WeatherLion

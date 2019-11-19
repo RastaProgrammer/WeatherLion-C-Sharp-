@@ -55,7 +55,7 @@ namespace WeatherLion
 
         protected void Done()
         {
-            UtilityMethod.LogMessage("info", log, "CityStorageService::Done");
+            UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, log, "CityStorageService::Done");
         }// end of method Done
 
         /// <summary>

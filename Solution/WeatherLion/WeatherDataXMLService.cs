@@ -162,18 +162,18 @@ namespace WeatherLion
                 writer.Flush();
                 writer.Close();                
 
-                UtilityMethod.LogMessage("info", providerName + "'s weather data was stored locally!",
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.INFO, providerName + "'s weather data was stored locally!",
                     "WeatherDataXMLService::SaveCurrentWeatherXML");
 
             }// end of try block
             catch (FileNotFoundException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                      $"{TAG}::SaveCurrentWeatherXML [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
             catch (IOException e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"{TAG}::SaveCurrentWeatherXML [line: {UtilityMethod.GetExceptionLineNumber(e)}]");               
             }// end of catch block
 
@@ -224,7 +224,7 @@ namespace WeatherLion
             }// end of try block
             catch(Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"{TAG}::UpdateUnits [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
         }// end of method UpdateUnits

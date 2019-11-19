@@ -90,7 +90,7 @@ namespace WeatherLion
             return html.ToString();
         }// end of method HTMLFormatter
 
-        public void Log(string message, string level, string source)
+        public void Log(string message, UtilityMethod.LogLevel level, string source)
         {
             string htmlHead = GetHTMLHead();
             string htmlFooter = GetHTMLFooter();
@@ -102,14 +102,18 @@ namespace WeatherLion
             using (var logWriter = new StreamWriter(previousHtmlLog, appendHTML))
             {
                 logWriter.WriteLine(htmlHead);
-                logWriter.WriteLine(HTMLFormatter(message, level, source));
+                logWriter.WriteLine(HTMLFormatter(message,
+                    Enum.GetName(typeof(UtilityMethod.LogLevel), level).ToLower(),
+                    source));
                 logWriter.WriteLine(htmlFooter);
             }// end of using block
 
             // Write the log to the text file
             using (var logWriter = new StreamWriter(previousTextLog, appendTEXT))
             {
-                logWriter.WriteLine(GetLogText(message, level, source));                
+                logWriter.WriteLine(GetLogText(message,
+                    Enum.GetName(typeof(UtilityMethod.LogLevel), level).ToLower(),
+                    source));                
             }// end of using block           
         }// end of method Log
 

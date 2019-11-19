@@ -37,12 +37,12 @@ namespace WeatherLion
             }// end of try block
             catch (WebException we)
             {
-                UtilityMethod.LogMessage("severe", we.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, we.Message,
                     $"{TAG}::DownloadUrl [line: {UtilityMethod.GetExceptionLineNumber(we)}]");
             }// end of catch block
             catch (Exception e)
             {
-                UtilityMethod.LogMessage("severe", e.Message,
+                UtilityMethod.LogMessage(UtilityMethod.LogLevel.SEVERE, e.Message,
                     $"{TAG}::DownloadUrl [line: {UtilityMethod.GetExceptionLineNumber(e)}]");
             }// end of catch block
 
