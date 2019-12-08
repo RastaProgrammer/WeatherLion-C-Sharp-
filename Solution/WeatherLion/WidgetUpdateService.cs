@@ -779,7 +779,7 @@ namespace WeatherLion
                 }// end of if block
             }// end of for each loop
 
-            currentCondition.Append(UtilityMethod.ToProperCase(cc.ToString().Trim()));
+            currentCondition.Append(UtilityMethod.ValidateCondition(cc.ToString().Trim()));
 
             currentWindDirection.Clear();
             currentWindDirection.Append(UtilityMethod.CompassDirection(darkSky.currently.windBearing));
@@ -978,7 +978,7 @@ namespace WeatherLion
                 ts.Clear();
                 ts.Append(fCondition.ToString());
                 fCondition.Clear();
-                fCondition.Append(UtilityMethod.ToProperCase(ts.ToString()));
+                fCondition.Append(UtilityMethod.ValidateCondition((ts.ToString())));
 
                 UpdateWidgetControl((Label)frmWeatherWidget.Controls.Find($"lblDay{i}Day", true)[0],
                     "Text", string.Format("{0:ddd d}", fxDate));
@@ -1088,8 +1088,8 @@ namespace WeatherLion
 
             currentCondition.Clear();
             currentCondition.Append(obs.iconName.Contains("_") ?
-                    UtilityMethod.ToProperCase(UtilityMethod.ReplaceAll(obs.iconName, "_", " ")) :
-                        UtilityMethod.ToProperCase(UtilityMethod.ReplaceAll(obs.iconName, "_", " ")));
+                    UtilityMethod.ValidateCondition(UtilityMethod.ReplaceAll(obs.iconName, "_", " ")) :
+                        UtilityMethod.ValidateCondition(UtilityMethod.ReplaceAll(obs.iconName, "_", " ")));
 
             currentWindDirection.Clear();
             currentWindDirection.Append(obs.windDescShort);
@@ -1302,7 +1302,7 @@ namespace WeatherLion
                     ts.Clear();
                     ts.Append(fCondition.ToString());
                     fCondition.Clear();
-                    fCondition.Append(UtilityMethod.ToProperCase(ts.ToString()));
+                    fCondition.Append(UtilityMethod.ValidateCondition(ts.ToString()));
 
                     UpdateWidgetControl((Label)frmWeatherWidget.Controls.Find($"lblDay{i}Day", true)[0],
                         "Text", string.Format("{0:ddd d}", fDay));
@@ -1410,7 +1410,7 @@ namespace WeatherLion
             currentCountry.Append(CityData.currentCityData.countryName);
 
             currentCondition.Clear(); // reset
-            currentCondition.Append(openWeatherWx.weather[0].description);
+            currentCondition.Append(UtilityMethod.ValidateCondition(openWeatherWx.weather[0].description));
 
             currentWindDirection.Clear(); // reset
             currentWindDirection.Append(UtilityMethod.CompassDirection(openWeatherWx.wind.deg));
@@ -1586,7 +1586,7 @@ namespace WeatherLion
                                         ? ts.ToString().IndexOf($" {word}")
                                         : ts.ToString().IndexOf($" {word} ");
 
-                            fCondition.Append(ts.ToString().Substring(0, index).Trim());
+                            fCondition.Append(UtilityMethod.ValidateCondition(ts.ToString().Substring(0, index).Trim()));
                         }// end of if block                            
                     }// end of for each block              
 
@@ -1737,7 +1737,7 @@ namespace WeatherLion
             currentCountry.Append(CityData.currentCityData.countryName);
 
             currentCondition.Clear(); // reset
-            currentCondition.Append(UtilityMethod.ToProperCase(
+            currentCondition.Append(UtilityMethod.ValidateCondition(
                     weatherBitWx.data[0].weather.description));
 
             currentWindDirection.Clear();
@@ -1952,7 +1952,7 @@ namespace WeatherLion
                         ts.Clear();
                         ts.Append(fCondition.ToString());
                         fCondition.Clear();
-                        fCondition.Append(UtilityMethod.ToProperCase(ts.ToString()));
+                        fCondition.Append(UtilityMethod.ValidateCondition(ts.ToString()));
                         UpdateWidgetControl((Label)frmWeatherWidget.Controls.Find($"lblDay{i}Day", true)[0],
                             "Text", string.Format(dayDateFormat, fDay));                       
 
@@ -2060,7 +2060,7 @@ namespace WeatherLion
             currentCountry.Append(yahoo19.location.country);
 
             currentCondition.Clear(); // reset
-            currentCondition.Append(yahoo19.current_observation.condition.text);
+            currentCondition.Append(UtilityMethod.ValidateCondition(yahoo19.current_observation.condition.text));
 
             currentHumidity.Clear();
             currentHumidity.Append($"{Math.Round(yahoo19.current_observation.atmosphere.humidity)}");
@@ -2221,7 +2221,8 @@ namespace WeatherLion
                     "Text", string.Format(dayDateFormat, fDate));
 
                 // Load current forecast condition weather image
-                StringBuilder fCondition = new StringBuilder(UtilityMethod.yahooWeatherCodes[fdf[i].code]);
+                StringBuilder fCondition = new StringBuilder(UtilityMethod.ValidateCondition(
+                    UtilityMethod.yahooWeatherCodes[fdf[i].code]));
 
                 if (fCondition.ToString().ToLower().Contains("(day)"))
                 {
@@ -2321,7 +2322,7 @@ namespace WeatherLion
             currentCountry.Append(yrWeatherData.country);
 
             currentCondition.Clear(); // reset
-            currentCondition.Append(UtilityMethod.ToProperCase(yrWeatherData.forecast[0].symbolName));
+            currentCondition.Append(UtilityMethod.ValidateCondition(yrWeatherData.forecast[0].symbolName));
 
             currentHumidity.Clear();
             currentHumidity.Append(currentHumidity.Length != 0 ? currentHumidity.ToString() : "0"); // use the humidity reading from previous providers
@@ -2505,7 +2506,7 @@ namespace WeatherLion
                         "Text", string.Format("{0:ddd d}", forecastDate));
 
                     // Load current forecast condition weather image
-                    string fCondition = wxDailyForecast.symbolName;
+                    string fCondition = UtilityMethod.ValidateCondition(wxDailyForecast.symbolName);
 
                     if (fCondition.ToString().ToLower().Contains("(day)"))
                     {

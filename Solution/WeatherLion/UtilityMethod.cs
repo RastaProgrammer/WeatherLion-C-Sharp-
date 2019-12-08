@@ -2309,7 +2309,33 @@ namespace WeatherLion
         public static string EscapeUriString(string uri)
         {
             return Uri.EscapeDataString(uri);
-        }// end of method EscapeUriString       
+        }// end of method EscapeUriString 
+
+        /// <summary>
+        /// Finds the closes word match to word.
+        /// </summary>
+        /// <param name="phraseList">A array containing a list of strings for check against.</param>
+        /// <param name="searchPhrase">A string to search the list for.</param>
+        /// <returns>The closest match to the query stry.</returns>
+        public static string FindClosestWordMatch(string[] phraseList, string searchPhrase)
+        {
+            StringBuilder closestMatch = new StringBuilder();
+            int closest = searchPhrase.Length;
+
+            foreach (string phrase in phraseList)
+            {
+                int cost = GetLevenshteinDistance(searchPhrase, phrase);
+
+                if (cost < closest)
+                {
+                    closest = cost;
+                    closestMatch.Clear();
+                    closestMatch.Append(phrase);
+                }// end of if block
+            }// end of for loop
+
+            return closestMatch.ToString();
+        }// end of method FindClosestWordMatch
 
         public static void FindGeoNamesCity(string cityName, PreferencesForm caller)
         {
@@ -2525,6 +2551,54 @@ namespace WeatherLion
 
             return fCount;
         }// end of method GetFileCount
+
+        /// <summary>
+        /// Compute the distance between two strings.
+        /// </summary>
+        /// <param name="firstString">The <see cref="string"/> the be checked</param>
+        /// <param name="secondString">The <see cref="string"/> the string that the fistString will be compared to</param>
+        /// <returns></returns>
+        public static int GetLevenshteinDistance(string firstString, string secondString)
+        {
+            int n = firstString.Length;
+            int m = secondString.Length;
+            int[,] distance = new int[n + 1, m + 1];
+
+            // Step 1
+            if (n == 0)
+            {
+                return m;
+            }// end of if block
+
+            if (m == 0)
+            {
+                return n;
+            }// end of if block
+
+            // Step 2
+            for (int i = 0; i <= n; distance[i, 0] = i++) ;
+
+            for (int j = 0; j <= m; distance[0, j] = j++) ;
+
+            // Step 3
+            for (int i = 1; i <= n; i++)
+            {
+                //Step 4
+                for (int j = 1; j <= m; j++)
+                {
+                    // Step 5
+                    int cost = (secondString[j - 1] == firstString[i - 1]) ? 0 : 1;
+
+                    // Step 6
+                    distance[i, j] = Math.Min(
+                        Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1),
+                    distance[i - 1, j - 1] + cost);
+                }// end of inner for loop
+            }// end of outer for loop
+
+            // Step 7
+            return distance[n , m];
+        }// end of method GetLevenshteinDistance
 
         /// <summary>
         /// Locate any subdirectories found in a specific directory
@@ -3645,6 +3719,9 @@ namespace WeatherLion
             {
                 condition = condition.Replace("(night)", "").Trim();
             }// end of if block
+
+            // create a new method for locating the nearest match
+            condition = FindClosestWordMatch( weatherImages.Keys.Cast<string>().ToArray(), condition);
 
             return condition.ToProperCase();
         }// end of method ValidateCondition
