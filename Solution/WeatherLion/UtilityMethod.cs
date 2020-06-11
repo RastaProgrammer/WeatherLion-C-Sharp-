@@ -2312,11 +2312,11 @@ namespace WeatherLion
         }// end of method EscapeUriString 
 
         /// <summary>
-        /// Finds the closes word match to word.
+        /// Finds the closest word match to word.
         /// </summary>
         /// <param name="phraseList">A array containing a list of strings for check against.</param>
         /// <param name="searchPhrase">A string to search the list for.</param>
-        /// <returns>The closest match to the query stry.</returns>
+        /// <returns>The closest match to the query string.</returns>
         public static string FindClosestWordMatch(string[] phraseList, string searchPhrase)
         {
             StringBuilder closestMatch = new StringBuilder();
@@ -2630,83 +2630,110 @@ namespace WeatherLion
             StringBuilder ipAddress = new StringBuilder();
             string output = null;
 
-            // configure the windows process and redirect the output data into a string
-            using (Process proc = new Process())
+            if( HasInternetConnection())
             {
-                proc.StartInfo.FileName = "cmd.exe";
-                proc.StartInfo.Arguments = "/c ipconfig";
-                proc.StartInfo.UseShellExecute = false;
-                proc.StartInfo.RedirectStandardOutput = true;
-                proc.Start();
-                output = proc.StandardOutput.ReadToEnd();
-            }// end of using block             
-
-            if (output != null)
-            {
-                foreach (var line in output.Split(new string[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries))
+                try
                 {
-                    string tempAdd = "Temporary IPv6 Address. . . . . . :";
-
-                    if (line != null)
-                    {
-                        if (line.Contains(tempAdd))
-                        {
-                            ipAddress.Append(line.Substring(tempAdd.Length + 4));
-                            break;
-                        }// end of if block
-                    }// end of if block                
-                }// end of for each loop
-            }// end of if block 
-
-            if (ipAddress.Length == 0)
-            {
-                //string[] s = new string[] { "https://www.trackip.net/ip?json", "IP" };
-
-                // fallback in case the command encountered an error
-                string[][] jsonUrls = new string[][]{
-                        new string[] { "https://www.trackip.net/ip?json", "IP" },
-                        new string[] { "https://api.ipify.org?format=json", "ip" }
-                      };
-                string strJSON = null;
-                string[] urlUsed = null;
-
-                if (HasInternetConnection())
+                    ip = HttpHelper.DownloadUrl( "http://ifconfig.me/ip" );
+                }// end of try block 
+                catch (Exception e) 
                 {
-                    while (strJSON == null)
+                    LogMessage( LogLevel.WARNING, e.Message,
+                        $"{TAG}::GetSystemIpAddress [line: {UtilityMethod.GetExceptionLineNumber(e)}]");                              			
+                }// end of catch block
+
+                if(ip == null)
+                {
+                    // configure the windows process and redirect the output data into a string
+                    using (Process proc = new Process())
                     {
-                        foreach (string[] url in jsonUrls)
+                        proc.StartInfo.FileName = "cmd.exe";
+                        proc.StartInfo.Arguments = "/c nslookup myip.opendns.com resolver1.opendns.com";
+                        proc.StartInfo.UseShellExecute = false;
+                        proc.StartInfo.RedirectStandardOutput = true;
+                        proc.Start();
+                        output = proc.StandardOutput.ReadToEnd();
+                    }// end of using block
+
+                    int i = 0; 
+                
+                    // the line containing the public ip address
+                    string pIpAddLine = "Address:  ";
+
+                    if (output != null)
+                    {
+                        i++;
+
+                        foreach (var line in output.Split(new string[] { Environment.NewLine },
+                        StringSplitOptions.RemoveEmptyEntries))
                         {
-                            try
+                            // The public ip should appear after the 2nd line
+                            if(i > 2)
                             {
-                                strJSON = HttpHelper.DownloadUrl(url[0]);
-                                urlUsed = url;
-                            }// end of try block
-                            catch (Exception)
-                            {
-                                strJSON = null;
-                            }// end of catch block
+                                if (line != null)
+                                {
+                                    if (line.Contains(pIpAddLine))
+                                    {
+                                        ipAddress.Append(line.Substring(pIpAddLine.Length));
+                                        break;
+                                    }// end of if block
+                                }// end of if block   
+                            }// end of if block                      
                         }// end of for each loop
-                    }// end of while loop
+                    }// end of if block
 
-                    try
+                    ip = ipAddress.ToString();
+                }// end of if block          
+
+                if (ipAddress.Length == 0)
+                {
+                    //string[] s = new string[] { "https://www.trackip.net/ip?json", "IP" };
+
+                    // fallback in case the command encountered an error
+                    string[][] jsonUrls = new string[][]{
+                            new string[] { "https://www.trackip.net/ip?json", "IP" },
+                            new string[] { "https://api.ipify.org?format=json", "ip" }
+                        };
+                    string strJSON = null;
+                    string[] urlUsed = null;
+
+                    if (HasInternetConnection())
                     {
-                        var json = JsonConvert.DeserializeObject<dynamic>(strJSON);
-
-                        // Check if a JSON was returned from the web service
-                        if (json != null)
+                        while (strJSON == null)
                         {
-                            // Get the String returned from the object
-                            ip = (urlUsed[1]);
-                        }// end of if block			
-                    }// end of try block
-                    catch (Exception je)
-                    {
-                        LogMessage(LogLevel.SEVERE, je.Message,
-                            $"UtilityMethod::getSystemIpAddress [line: {UtilityMethod.GetExceptionLineNumber(je)}]");
-                    }// end of catch block
-                }// end of if block
-            }// end of if block            
+                            foreach (string[] url in jsonUrls)
+                            {
+                                try
+                                {
+                                    strJSON = HttpHelper.DownloadUrl(url[0]);
+                                    urlUsed = url;
+                                }// end of try block
+                                catch (Exception)
+                                {
+                                    strJSON = null;
+                                }// end of catch block
+                            }// end of for each loop
+                        }// end of while loop
+
+                        try
+                        {
+                            var json = JsonConvert.DeserializeObject<dynamic>(strJSON);
+
+                            // Check if a JSON was returned from the web service
+                            if (json != null)
+                            {
+                                // Get the String returned from the object
+                                ip = (urlUsed[1]);
+                            }// end of if block			
+                        }// end of try block
+                        catch (Exception je)
+                        {
+                            LogMessage(LogLevel.SEVERE, je.Message,
+                                $"UtilityMethod::getSystemIpAddress [line: {UtilityMethod.GetExceptionLineNumber(je)}]");
+                        }// end of catch block
+                    }// end of if block
+                }// end of if block            
+            }// end of if block             
 
             // Return the data from specified url
             return ipAddress.ToString().Trim();
@@ -3595,7 +3622,8 @@ namespace WeatherLion
                 }// end of else if block
                 else if ((i < cycle) && char.IsLetter(sequence[i]) &&
                         (char.ToString(sequence[i - 1]).Equals(sep[0]) ||
-                        char.ToString(sequence[i - 1]).Equals(sep[1])))
+                        char.ToString(sequence[i - 1]).Equals(sep[1]) ||
+                        char.ToString(sequence[i - 1]).Equals(sep[3])))
                 {
                     sequence[i] = char.ToUpper(sequence[i]);
                 }// end of else if block
