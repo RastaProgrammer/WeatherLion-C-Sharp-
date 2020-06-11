@@ -2320,21 +2320,53 @@ namespace WeatherLion
         public static string FindClosestWordMatch(string[] phraseList, string searchPhrase)
         {
             StringBuilder closestMatch = new StringBuilder();
+            StringBuilder mostLikelyMatch = new StringBuilder();
             int closest = searchPhrase.Length;
+            int highestProbability = 0; // this is the highest percentage of a possible match
 
             foreach (string phrase in phraseList)
             {
-                int cost = GetLevenshteinDistance(searchPhrase, phrase);
+                int changesNeeded = GetLevenshteinDistance(searchPhrase, phrase);
+                int wordProbability = PercentageMatch(phrase, searchPhrase);
 
-                if (cost < closest)
+                // if 50% or greater match then its is a possible substitution
+                if (wordProbability > highestProbability)
                 {
-                    closest = cost;
+                    highestProbability = wordProbability;
+                    mostLikelyMatch.Clear();
+                    mostLikelyMatch.Append(phrase);
+                }// end of if block
+
+                if (changesNeeded < closest)
+                {
+                    closest = changesNeeded;
                     closestMatch.Clear();
                     closestMatch.Append(phrase);
                 }// end of if block
             }// end of for loop
 
-            return closestMatch.ToString();
+            // if both algorithms came up with the same string
+            // then just return any one
+            if (closestMatch.ToString().Equals(mostLikelyMatch.ToString()))
+            {
+                return closestMatch.ToString();
+            }// end of if block
+            else
+            {
+                // if both algorithms came up with different strings,
+                // use the one with the highest percentage match
+                int a = PercentageMatch(closestMatch.ToString(), searchPhrase);
+                int b = PercentageMatch(mostLikelyMatch.ToString(), searchPhrase);
+
+                if (a > b)
+                {
+                    return closestMatch.ToString();
+                }// end of if block                
+                else
+                {
+                    return mostLikelyMatch.ToString();
+                }// end of else block
+            }// end of else block 
         }// end of method FindClosestWordMatch
 
         public static void FindGeoNamesCity(string cityName, PreferencesForm caller)
@@ -2674,69 +2706,69 @@ namespace WeatherLion
                                 {
                                     if (line.Contains(pIpAddLine))
                                     {
-                                        ipAddress.Append(line.Substring(pIpAddLine.Length));
+                                        ip = line.Substring(pIpAddLine.Length);
                                         break;
                                     }// end of if block
                                 }// end of if block   
                             }// end of if block                      
                         }// end of for each loop
-                    }// end of if block
-
-                    ip = ipAddress.ToString();
+                    }// end of if block                   
                 }// end of if block          
 
-                if (ipAddress.Length == 0)
+                if(ip == null)
                 {
-                    //string[] s = new string[] { "https://www.trackip.net/ip?json", "IP" };
-
                     // fallback in case the command encountered an error
                     string[][] jsonUrls = new string[][]{
-                            new string[] { "https://www.trackip.net/ip?json", "IP" },
-                            new string[] { "https://api.ipify.org?format=json", "ip" }
-                        };
+                        new string[] { "https://www.trackip.net/ip?json", "IP" },
+                        new string[] { "https://api.ipify.org?format=json", "ip" }
+                    };
+
                     string strJSON = null;
                     string[] urlUsed = null;
-
-                    if (HasInternetConnection())
+                        
+                    while (strJSON == null)
                     {
-                        while (strJSON == null)
+                        foreach (string[] url in jsonUrls)
                         {
-                            foreach (string[] url in jsonUrls)
+                            try
                             {
-                                try
-                                {
-                                    strJSON = HttpHelper.DownloadUrl(url[0]);
-                                    urlUsed = url;
-                                }// end of try block
-                                catch (Exception)
-                                {
-                                    strJSON = null;
-                                }// end of catch block
-                            }// end of for each loop
-                        }// end of while loop
-
-                        try
-                        {
-                            var json = JsonConvert.DeserializeObject<dynamic>(strJSON);
-
-                            // Check if a JSON was returned from the web service
-                            if (json != null)
+                                strJSON = HttpHelper.DownloadUrl(url[0]);
+                                urlUsed = url;
+                            }// end of try block
+                            catch (Exception)
                             {
-                                // Get the String returned from the object
-                                ip = (urlUsed[1]);
-                            }// end of if block			
-                        }// end of try block
-                        catch (Exception je)
+                                strJSON = null;
+                            }// end of catch block
+                        }// end of for each loop
+                    }// end of while loop
+
+                    try
+                    {
+                        var json = JsonConvert.DeserializeObject<dynamic>(strJSON);
+
+                        // Check if a JSON was returned from the web service
+                        if (json != null)
                         {
-                            LogMessage(LogLevel.SEVERE, je.Message,
-                                $"UtilityMethod::getSystemIpAddress [line: {UtilityMethod.GetExceptionLineNumber(je)}]");
-                        }// end of catch block
-                    }// end of if block
-                }// end of if block            
-            }// end of if block             
+                            // Get the String returned from the object
+                            ip = (urlUsed[1]);
+                        }// end of if block			
+                    }// end of try block
+                    catch (Exception je)
+                    {
+                        LogMessage(LogLevel.SEVERE, je.Message,
+                            $"UtilityMethod::getSystemIpAddress [line: {UtilityMethod.GetExceptionLineNumber(je)}]");
+                    }// end of catch block                      
+                }// end of if block                       
+            }// end of if block
+            else
+            {
+                 ShowMessage("No Internet Connection.", null,
+                    title: $"{WeatherLionMain.PROGRAM_NAME}", buttons: MessageBoxButtons.OK,
+                        mbIcon: MessageBoxIcon.Error);
+            }// end of else block
 
             // Return the data from specified url
-            return ipAddress.ToString().Trim();
+            return ip;
 
         }// end of method GetSystemIpAddress
 
@@ -2834,63 +2866,56 @@ namespace WeatherLion
         public static CityData GetSystemLocation()
         {
             CityData cd = null;
-            string systemIp = GetSystemIpAddress();
-            string ak = "1bb227db8f2dca1b9a3917fb403e2e99";
+            string publicIp = GetSystemIpAddress();
+            string ak = "1bb227db8f2dca1b9a3917fb403e2e99"; // Get your own free key from the website
+            string ipStackUrl = $"http://api.ipstack.com/{publicIp}?access_key={ak}";
 
             try
             {
-                // TO BE DEPRECATED
-                string ipStackUrl = $"http://api.ipstack.com/{systemIp}?access_key={ak}&output=xml&legacy=1";
+               // get ip details from web service
+               string strJSON = HttpHelper.DownloadUrl(ipStackUrl);                
 
-                // download the document from the URL and build it
-                XmlDocument serviceData = new XmlDocument();
-                string xmlData = HttpHelper.DownloadUrl(ipStackUrl);
-                serviceData.LoadXml(xmlData);
+               if (strJSON != null)
+               {
+                    dynamic publicIpData = JsonConvert.DeserializeObject<dynamic>(strJSON);
+                                        
+                    //ipstack.com implementation
+                    string ip = publicIpData["ip"].ToString();
+                    string city = publicIpData["city"].ToString();
+                    string regionName = publicIpData["region_name"].ToString();
+                    string regionCode = publicIpData["region_code"].ToString();
+                    string countryName = publicIpData["country_name"].ToString();
+                    string countryCode = publicIpData["country_code"].ToString();
+                    string zipCode = publicIpData["zip"].ToString();                   
+                    string latitude = publicIpData["latitude"].ToString();
+                    string longitude = publicIpData["longitude"].ToString();                    
 
-                // get the root node of the XML document
-                XmlElement rootNode = serviceData.DocumentElement;
-
-                //get the text from the root's children nodes
-                //ipstack.com implementation
-                string ip = rootNode.ChildNodes[0].InnerText;
-                string countryCode = rootNode.ChildNodes[1].InnerText;
-                string countryName = rootNode.ChildNodes[2].InnerText;
-                string regionCode = rootNode.ChildNodes[3].InnerText;
-                string regionName = rootNode.ChildNodes[4].InnerText;
-                string city = rootNode.ChildNodes[5].InnerText;
-                string zipCode = rootNode.ChildNodes[6].InnerText;
-                string timeZone = rootNode.ChildNodes[7].InnerText;
-                string latitude = rootNode.ChildNodes[8].InnerText;
-                string longitude = rootNode.ChildNodes[9].InnerText;
-                string metroCode = rootNode.ChildNodes[10].InnerText;
-
-                // create a new CityData object
-                cd = new CityData(city, countryName, countryCode, regionName,
-                        regionCode, float.Parse(latitude), float.Parse(longitude));
+                    // create a new CityData object
+                    cd = new CityData(city, countryName, countryCode, regionName,
+                            regionCode, float.Parse(latitude), float.Parse(longitude));
+                }// end of if block             
             }// end of try block
-            catch (Exception)
+            catch (Exception e)
             {
-                string ipApiUrl = "http://ip-api.com/xml";
+                LogMessage(LogLevel.WARNING, "Error get ip address from ipstack.com!",
+                    $"{TAG} ::GetSystemLocation [line: {GetExceptionLineNumber(e)}]");
 
-                // download the document from the URL and build it
-                XmlDocument serviceData = new XmlDocument();
-                string xmlData = HttpHelper.DownloadUrl(ipApiUrl);
-                serviceData.LoadXml(xmlData);
+                LogMessage(LogLevel.INFO, "Falling back to ipapi.co for data.",
+                    $"{TAG} ::GetSystemLocation");
 
-                // get the root node of the XML document
-                XmlElement rootNode = serviceData.DocumentElement;
+                string ipApiUrl = $"https://ipapi.co/{publicIp}/json";
+                string strJSON = HttpHelper.DownloadUrl(ipApiUrl);
+                dynamic publicIpData = JsonConvert.DeserializeObject<dynamic>(strJSON);
 
-                //ip - api.com implementation
-                string countryName = rootNode.ChildNodes[1].InnerText;
-                string countryCode = rootNode.ChildNodes[2].InnerText;
-                string regionCode = rootNode.ChildNodes[3].InnerText;
-                string regionName = rootNode.ChildNodes[4].InnerText;
-                string city = rootNode.ChildNodes[5].InnerText;
-                string zipCode = rootNode.ChildNodes[6].InnerText;
-                string latitude = rootNode.ChildNodes[7].InnerText;
-                string longitude = rootNode.ChildNodes[8].InnerText;
-                string timeZone = rootNode.ChildNodes[9].InnerText;
-                string serviceProvider = rootNode.ChildNodes[10].InnerText;
+                //ipstack.com implementation
+                string city = publicIpData["city"].ToString();
+                string regionName = publicIpData["region"].ToString();
+                string regionCode = publicIpData["region_code"].ToString();
+                string countryName = publicIpData["country_name"].ToString();
+                string countryCode = publicIpData["country"].ToString();
+                string zipCode = publicIpData["postal"].ToString();
+                string latitude = publicIpData["latitude"].ToString();
+                string longitude = publicIpData["longitude"].ToString();                
 
                 // create a new CityData object
                 cd = new CityData(city, countryName, countryCode, regionName,
@@ -3214,6 +3239,41 @@ namespace WeatherLion
 
             return cn;
         }// end of method NumberOfCharacterOccurences
+
+        /// <summary>
+        /// Determines what percentage match occurs when both strings are compared
+        /// </summary>
+        /// <param name="mainString"><The <see cref="string"/> that should contain a similar 
+        /// <see cref="string"/></param>
+        /// <param name="searchString">The <see cref="string"/> that needs to be matched</param>
+        /// <returns>The numeric percentage of the comparison</returns>
+        public static int PercentageMatch(string mainString, string searchString)
+        {
+            string[] ms_words = mainString.Split(' ');
+            string[] ss_words = searchString.Split(' ');
+            int num_words_found = 0;
+            float match_percentage = 0;
+
+            foreach (string w in ss_words)
+            {
+                if (mainString.Contains(w))
+                {
+                    // the string contains this word
+                    num_words_found++; // increment the number of words found
+                }// end of if block
+            }// end of for each loop
+
+            // what percentage of the main string is the search string
+            match_percentage = ((float) num_words_found / (float) ms_words.Length) * 100.0f;
+
+            // the main string cannot be shorter than the search string for a 100% match
+            if (ms_words.Length < ss_words.Length)
+            {
+                match_percentage = ((float) num_words_found / (float) ss_words.Length) * 100.0f;
+            }// end of if block	
+
+            return (int) match_percentage;
+        }// end of function percentageMatch
 
         /// <summary>
         /// Replace all instances of a character withing a <see cref="string"/>
