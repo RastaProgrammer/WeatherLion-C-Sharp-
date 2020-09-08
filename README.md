@@ -32,7 +32,7 @@ The program makes use data received from the specified web services in either `J
 **_Access must be supplied for any the specified weather providers and a username to use the [geonames](http://www.geonames.org/) website for city search._**
 
 ## Dependencies
- The following packages are <b>required</b> for the program to operate successfully and can be downloaded via the NuGet Package Manager within the Visual Studio IDE:
+ The following packages are **required** for the program to operate successfully and can be downloaded via the NuGet Package Manager within the Visual Studio IDE:
  
 1. EntityFramework.6.2.0
 1. HtmlRenderer.Core.1.5.0.6
